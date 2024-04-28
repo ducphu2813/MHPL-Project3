@@ -1,0 +1,88 @@
+<div th:fragment="component">
+
+    <div>
+        <h1>Lịch sử mượn, đặt chỗ của thành viên <span th:text="${session.thanhvien.ten}"></span></h1>
+    </div>
+
+<!--    Tab link-->
+    <div class="tab">
+        <button class="tablinks btn btn-secondary" onclick="openContent(event, 'renting')">Đang Mượn</button>
+        <button class="tablinks btn btn-primary" onclick="openContent(event, 'returned')">Đã Trả</button>
+        <button class="tablinks btn btn-primary" onclick="openContent(event, 'booking')">Đặt Chỗ</button>
+    </div>
+
+<!--    tab content-->
+
+
+    <div id="renting" class="tabcontent" style="display: block">
+        đây là bảng đang mượn
+            <table>
+                <tr>
+                    <th>Tên thiết bị</th>
+                    <th>Ngày mượn</th>
+                </tr>
+
+                <tr th:each="muon : ${dsTTSDdangMuon}">
+                    <td th:text="${muon.thietbi.ten}"></td>
+                    <td th:text="${muon.ngaymuon}"></td>
+                </tr>
+
+            </table>
+    </div>
+
+
+    <div id="returned" class="tabcontent" style="display: none">
+        đây là bảng đã trả
+        <table>
+            <tr>
+                <th>Tên thiết bị</th>
+                <th>Ngày mượn</th>
+                <th>Ngày trả</th>
+            </tr>
+
+            <tr th:each="muon : ${dsTTSDdaTra}">
+                <td th:text="${muon.thietbi.ten}"></td>
+                <td th:text="${muon.ngaymuon}"></td>
+                <td th:text="${muon.ngaytra}"></td>
+            </tr>
+
+        </table>
+    </div>
+
+
+
+    <div id="booking" class="tabcontent" style="display: none">
+        đây là bảng đặt chỗ á
+        <table>
+            <tr>
+                <th>Tên thiết bị</th>
+                <th>Ngày đặt chỗ</th>
+            </tr>
+
+            <tr th:each="muon : ${dsTTSDdatCho}">
+                <td th:text="${muon.thietbi.ten}"></td>
+                <td th:text="${muon.tg_datcho}"></td>
+            </tr>
+
+        </table>
+    </div>
+
+    <script>
+        function openContent(evt, contentName) {
+            var i, tabcontent, tablinks;
+
+            tabcontent = document.getElementsByClassName("tabcontent");
+            for (i = 0; i < tabcontent.length; i++) {
+                tabcontent[i].style.display = "none";
+            }
+
+            tablinks = document.getElementsByClassName("tablinks");
+            for (i = 0; i < tablinks.length; i++) {
+                tablinks[i].className = tablinks[i].className.replace(" btn-secondary", " btn-primary");
+            }
+
+            document.getElementById(contentName).style.display = "block";
+            evt.currentTarget.className = evt.currentTarget.className.replace(" btn-primary", " btn-secondary");
+        }
+    </script>
+</div>

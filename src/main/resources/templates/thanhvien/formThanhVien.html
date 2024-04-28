@@ -1,0 +1,73 @@
+<!doctype html>
+<html lang="en" xmlns:th="http://www.thymeleaf.org">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport"
+          content="width=device-width, user-scalable=no, initial-scale=1.0, maximum-scale=1.0, minimum-scale=1.0">
+    <meta http-equiv="X-UA-Compatible" content="ie=edge">
+    <title>Document</title>
+</head>
+<body>
+    <h1>Thêm thành viên</h1>
+    <form action="#"
+          method="post"
+          th:action="@{/thanhvien/save}"
+          th:object="${tv}"
+    >
+        <input type="hidden"
+               th:field="*{id}">
+
+        <input type="text"
+               placeholder="Nhập tên"
+               th:field="*{ten}"
+        ><br><br>
+
+        <input type="number"
+               placeholder="Nhập số điện thoại"
+               th:field="*{sodienthoai}"
+        ><br><br>
+
+        Chọn Khoa
+        <select th:field="*{khoaId}">
+            <option th:each="k : ${dsKhoa}"
+                    th:value="${k.id}"
+                    th:text="${k.ten}"
+            ></option>
+        </select><br><br>
+
+        Chọn Ngành
+        <select th:field="*{nganhId}">
+            <option th:each="n : ${dsNganh}"
+                    th:value="${n.id}"
+                    th:text="${n.ten}"
+            ></option>
+        </select><br><br>
+
+        <input type="text"
+               placeholder="Email"
+               th:field="*{email}"
+        ><br>
+        <div>
+                <span th:if="${#fields.hasErrors('email')}"
+                      th:errors="*{email}"
+                      class="error"
+                ></span>
+        </div>
+        <br>
+
+        <input type="password"
+               placeholder="Mật Khẩu"
+               th:field="*{password}"
+        ><br>
+        <div>
+                <span th:if="${#fields.hasErrors('password')}"
+                      th:errors="*{password}"
+                      class="error"
+                ></span>
+        </div>
+        <br>
+
+        <button type="submit">Xác nhận</button>
+    </form>
+</body>
+</html>

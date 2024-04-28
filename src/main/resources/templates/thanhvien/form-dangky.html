@@ -1,0 +1,115 @@
+<!doctype html>
+<html lang="en" xmlns:th="http://www.thymeleaf.org">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport"
+          content="width=device-width, user-scalable=no, initial-scale=1.0, maximum-scale=1.0, minimum-scale=1.0">
+    <meta http-equiv="X-UA-Compatible" content="ie=edge">
+    <link rel="stylesheet" href="/css/form-dangky.css">
+    <title>Đăng ký thành viên online</title>
+</head>
+<body>
+    <div>
+        Đăng ký thành viên online
+    </div>
+    <div class="form-section">
+        <form action="#"
+              method="post"
+              th:action="@{/thanhvien/register}"
+              th:object="${tv}"
+        >
+
+            <input type="text"
+                   placeholder="Nhập tên"
+                   th:field="*{ten}"
+            ><br>
+            <div>
+                <span th:if="${#fields.hasErrors('ten')}"
+                      th:errors="*{ten}"
+                      class="error"
+                ></span>
+            </div>
+            <br>
+
+            <input type="number"
+                   placeholder="Số điện thoại"
+                   th:field="*{sodienthoai}"
+            ><br>
+            <div>
+                <span th:if="${#fields.hasErrors('sodienthoai')}"
+                      th:errors="*{sodienthoai}"
+                      class="error"
+                ></span>
+            </div>
+            <br>
+
+            Chọn Khoa
+            <select th:field="*{khoaId}">
+                <option th:each="k : ${dsKhoa}"
+                        th:value="${k.id}"
+                        th:text="${k.ten}"
+                ></option>
+            </select><br><br>
+
+            Chọn Ngành
+            <select th:field="*{nganhId}">
+                <option th:each="n : ${dsNganh}"
+                        th:value="${n.id}"
+                        th:text="${n.ten}"
+                ></option>
+            </select><br><br>
+
+            <input type="text"
+                   placeholder="Email"
+                   th:field="*{email}"
+            ><br>
+            <div>
+                <span th:if="${#fields.hasErrors('email')}"
+                      th:errors="*{email}"
+                      class="error"
+                ></span>
+            </div>
+            <br>
+
+
+            <input type="password"
+                   placeholder="Mật khẩu"
+                   th:field="*{password}"
+            ><br>
+            <div>
+                <span th:if="${#fields.hasErrors('password')}"
+                      th:errors="*{password}"
+                      class="error"
+                ></span>
+            </div>
+            <br>
+
+            <input type="password"
+                   placeholder="Nhập lại mật khẩu"
+                   th:field="*{repassword}"
+            ><br>
+            <div>
+                <span class="error"
+                      th:if="${#fields.hasErrors('repassword')}"
+                      th:errors="*{repassword}"
+                ></span>
+
+<!--                lỗi ko nhập lại đúng mật khẩu-->
+                <span th:if="${#fields.hasErrors('passwordMatching')}"
+                      th:errors="*{passwordMatching}"
+                      class="error"
+                >
+
+                </span>
+            </div>
+            <br>
+
+            Đã có tài khoản? <a href="/thanhvien/login">Đăng nhập</a><br><br>
+
+            <input type="submit" value="Đăng ký">
+        </form>
+    </div>
+
+
+</body>
+</html>

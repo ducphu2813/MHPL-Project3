@@ -1,0 +1,60 @@
+<!doctype html>
+<html lang="en" xmlns:th="http://www.thymeleaf.org">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport"
+          content="width=device-width, user-scalable=no, initial-scale=1.0, maximum-scale=1.0, minimum-scale=1.0">
+    <meta http-equiv="X-UA-Compatible" content="ie=edge">
+    <link rel="stylesheet" href="/css/check-form.css">
+    <title>Document</title>
+</head>
+<body>
+    <h1>Kiểm tra vào khu học tập</h1>
+
+    <form action="#"
+          method="post"
+          th:action="@{/thanhvien/check}"
+          id="checkForm"
+    >
+        <input type="text"
+               placeholder="Nhập mã sinh viên"
+               name="tvId"
+               th:name="tvId"
+               th:value="${tvId}"
+               id="tvIdInput"
+        ><br>
+        <div>
+            <label id="message"></label>
+        </div>
+
+        <input type="submit" value="Kiểm tra">
+    </form>
+
+    <div th:if="${check == 2}">
+        <p>Chào mừng <label th:text="${tv.ten}"></label> đến khu học tập</p>
+    </div>
+
+
+    <div th:if="${check == 1}">
+        <p>Không tồn tại</p>
+    </div>
+
+
+    <div>
+
+    </div>
+
+    <script>
+        document.getElementById('checkForm').addEventListener('submit', function(event) {
+            var tvIdInput = document.getElementById('tvIdInput');
+            var tvId = tvIdInput.value;
+
+            if (!Number.isInteger(Number(tvId))) {
+                document.getElementById('message').innerText = 'Mã thành viên phải là số.';
+                // alert('Mã thành viên phải là số.');
+                event.preventDefault();
+            }
+        });
+    </script>
+</body>
+</html>

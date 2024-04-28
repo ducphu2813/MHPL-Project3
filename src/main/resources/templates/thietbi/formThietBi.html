@@ -1,0 +1,42 @@
+<!doctype html>
+<html lang="en" xmlns:th="http://www.thymeleaf.org">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport"
+          content="width=device-width, user-scalable=no, initial-scale=1.0, maximum-scale=1.0, minimum-scale=1.0">
+    <meta http-equiv="X-UA-Compatible" content="ie=edge">
+    <title>Document</title>
+</head>
+<body>
+    <h1>Thêm thiết bị</h1>
+
+    <form action="#"
+          method="post"
+          th:action="@{/thietbi/save}"
+          th:object="${tb}"
+    >
+        <input type="hidden"
+               th:field="*{id}">
+
+        <input type="text"
+               placeholder="Nhập tên"
+               th:field="*{ten}"
+        ><br><br>
+
+        <input type="text"
+               placeholder="Nhập Mô tả"
+               th:field="*{mota}"
+        ><br><br>
+
+        Chọn Loại
+        <select th:field="*{loaiThietBiId}">
+            <option th:each="l : ${dsLoaiThietBi}"
+                    th:value="${l.id}"
+                    th:text="${l.ten}"
+            ></option>
+        </select><br><br>
+
+        <button type="submit">Xác nhận</button>
+    </form>
+</body>
+</html>

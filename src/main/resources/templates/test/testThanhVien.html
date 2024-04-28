@@ -1,0 +1,17 @@
+<!doctype html>
+<html lang="en" xmlns:th="http://www.thymeleaf.org">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport"
+          content="width=device-width, user-scalable=no, initial-scale=1.0, maximum-scale=1.0, minimum-scale=1.0">
+    <meta http-equiv="X-UA-Compatible" content="ie=edge">
+    <title>Document</title>
+</head>
+<body>
+<h1>Danh sách thành viên</h1>
+<div th:each="tv : ${dsThanhVien}">
+    <p th:text="${tv.id}"></p> - <p th:text="${tv.ten}"></p> - <p th:text="${tv.khoa.ten}"></p> - <p th:text="${tv.nganh.ten}"></p> - <p th:text="${tv.sodienthoai}"></p>
+    <hr>
+</div>
+</body>
+</html>

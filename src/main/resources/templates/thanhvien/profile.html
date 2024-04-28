@@ -1,0 +1,33 @@
+<div th:fragment="component">
+
+    <h2>Thông tin cá nhân</h2>
+
+    <div>
+        Mã số sinh viên:
+        <span th:text="${session.thanhvien.id}"></span><br>
+
+        Tên:
+        <span type="text"
+              placeholder="Nhập tên"
+              th:text="${session.thanhvien.ten}"></span>
+        <br>
+
+        Số địn Thọi:
+        <span type="text"
+              placeholder="Nhập tên"
+              th:text="${session.thanhvien.id}"
+        ></span><br>
+
+        Email:
+        <span type="text"
+              th:text="${session.thanhvien.email}"
+        ></span><br>
+
+        Khoa:
+        <span th:text="${session.thanhvien.tenKhoa}"></span><br>
+
+        Ngành:
+        <span th:text="${session.thanhvien.tenNganh}"></span><br>
+
+    </div>
+</div>

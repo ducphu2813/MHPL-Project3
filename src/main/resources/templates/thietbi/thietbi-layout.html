@@ -1,0 +1,109 @@
+<div th:fragment="content">
+
+    <div>
+        <a th:href="@{/thietbi/add}">
+            Thêm mới thiết bị
+        </a>
+
+        <a href="#">
+            Thêm bằng excel
+        </a>
+
+        <a href="">
+            Cho mượn thiết bị
+        </a>
+
+        <a href="">
+            Trả thiết bị
+        </a>
+
+        <a href="">
+            Xóa theo loại thiết bị
+        </a>
+    </div>
+
+<!--    Tab link-->
+    <div class="tab">
+        <button class="tablinks" onclick="openContent(event, 'all')">Tất cả</button>
+        <button class="tablinks" onclick="openContent(event, 'free')">Thiết bị rảnh</button>
+    </div>
+
+<!--    Tab content-->
+
+<!--    Bảng tất cả thiết bị-->
+    <div id="all" class="tabcontent" style="display: block">
+        <table>
+            <thead>
+                <tr>
+                    <th>Id</th>
+                    <th>Tên</th>
+                    <th>Mô tả</th>
+                    <th>Loại TB</th>
+                    <th>Thao tác</th>
+                </tr>
+            </thead>
+
+            <tbody>
+                <tr th:each="tb : ${dsThietBi}">
+                    <td th:text="${tb.id}"></td>
+                    <td th:text="${tb.ten}"></td>
+                    <td th:text="${tb.mota}"></td>
+                    <td th:text="${tb.loai_thietbi.ten}"></td>
+                    <td>
+                        <a th:href="@{/thietbi/update(tbId=${tb.id})}">Sửa</a>
+                        <a th:href="@{/thietbi/delete(tbId=${tb.id})}"
+                            onclick="if (!(confirm('Bạn có chắc chắn muốn xóa không?'))) return false"
+                        >Xóa</a>
+                    </td>
+                </tr>
+            </tbody>
+
+        </table>
+    </div>
+
+<!--    bảng thiết bị đang rảnh-->
+    <div id="free" class="tabcontent" style="display: none">
+        this is free table
+        <table>
+            <thead>
+            <tr>
+                <th>Id</th>
+                <th>Tên</th>
+                <th>Mô tả</th>
+                <th>Loại TB</th>
+                <th>Thao tác</th>
+            </tr>
+            </thead>
+
+            <tbody>
+
+            </tbody>
+
+        </table>
+    </div>
+
+    <script>
+
+        function openContent(evt, contentName) {
+
+            //khai báo những biến cần dùng
+            var i, tabcontent, tablinks;
+
+            //lấy tất cả thẻ có class là tabcontent và ẩn đi
+            tabcontent = document.getElementsByClassName("tabcontent");
+            for (i = 0; i < tabcontent.length; i++) {
+                tabcontent[i].style.display = "none";
+            }
+
+            //lấy tất cả thẻ có class là tablinks và xóa class active
+            tablinks = document.getElementsByClassName("tablinks");
+            for (i = 0; i < tablinks.length; i++) {
+                tablinks[i].className = tablinks[i].className.replace(" active", "");
+            }
+
+            //hiển thị nội dung của tab được chọn
+            document.getElementById(contentName).style.display = "block";
+            evt.currentTarget.className += " active";
+        }
+    </script>
+</div>

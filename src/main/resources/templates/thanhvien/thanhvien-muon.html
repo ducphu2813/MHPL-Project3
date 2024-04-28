@@ -1,0 +1,146 @@
+<!doctype html>
+<html lang="en" xmlns:th="http://www.thymeleaf.org">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport"
+          content="width=device-width, user-scalable=no, initial-scale=1.0, maximum-scale=1.0, minimum-scale=1.0">
+    <meta http-equiv="X-UA-Compatible" content="ie=edge">
+    <link rel="stylesheet" href="https://stackpath.bootstrapcdn.com/bootstrap/4.3.1/css/bootstrap.min.css">
+    <script src="https://code.jquery.com/jquery-3.3.1.slim.min.js"></script>
+    <script src="https://code.jquery.com/jquery-3.6.0.min.js"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/popper.js/1.14.7/umd/popper.min.js"></script>
+    <script src="https://stackpath.bootstrapcdn.com/bootstrap/4.3.1/js/bootstrap.min.js"></script>
+    <title>Document</title>
+</head>
+<body>
+    <h2>Trang đặt chỗ mượn thiết bị</h2>
+
+<!--    phần tìm thiết bị theo tên-->
+    <div>
+        <form th:action="@{/thietbi/search}"
+              method="get"
+        >
+
+            <input type="text"
+                   placeholder="Nhập tên thiết bị"
+                   th:name="ten"
+                   name="ten"
+            >
+
+            <input type="submit" value="Tìm kiếm">
+        </form>
+
+        <div class="result"
+             th:if="${dsThietBi != null}"
+        >
+            <table>
+                <tr>
+                    <th>Mã thiết bị</th>
+                    <th>Tên thiết bị</th>
+                    <th>Mô tả</th>
+                    <th>Loại thiết bị</th>
+                    <th>Đặt chỗ</th>
+                </tr>
+                <tr th:each="thietbi : ${dsThietBi}">
+                    <td th:text="${thietbi.id}"></td>
+                    <td th:text="${thietbi.ten}"></td>
+                    <td th:text="${thietbi.mota}"></td>
+                    <td th:text="${thietbi.loai_thietbi.ten}"></td>
+                    <td>
+                        <button type="button" class="btn btn-primary" data-toggle="modal" th:attr="data-target='#bookingModal' + ${thietbi.id}">
+                            Đặt chỗ
+                        </button>
+
+                        <!-- Modal -->
+                        <div class="modal fade" th:id="'bookingModal' + ${thietbi.id}" tabindex="-1" role="dialog" aria-labelledby="bookingModalLabel" aria-hidden="true">
+                            <div class="modal-dialog" role="document">
+                                <div class="modal-content">
+                                    <div class="modal-header">
+                                        <h5 class="modal-title" id="bookingModalLabel">Đặt chỗ thiết bị <span th:text="${thietbi.ten}"></span></h5>
+                                        <button type="button" class="close" data-dismiss="modal" aria-label="Close">
+                                            <span aria-hidden="true">&times;</span>
+                                        </button>
+                                    </div>
+                                    <div class="modal-body">
+                                        <form th:action="@{/ttsd/book}" method="post" th:id="'bookingForm' + ${thietbi.id}">
+                                            <input type="hidden" th:name="tbId" th:value="${thietbi.id}">
+                                            <div class="form-group">
+                                                <label for="tg_datcho">Ngày đặt chỗ</label>
+                                                <input type="datetime-local" id="tg_datcho" th:name="tg_datcho" class="form-control date-input" required>
+                                                <span th:id="'message' + ${thietbi.id}"></span>
+                                            </div>
+                                            <button type="submit" class="btn btn-primary">Đặt chỗ</button>
+                                        </form>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+
+                    </td>
+                </tr>
+            </table>
+
+<!--            <input type="datetime-local">-->
+
+        </div>
+
+    </div>
+
+    <script>
+        // Lấy ngày hôm nay
+        var today = new Date();
+        var dd = String(today.getDate()).padStart(2, '0');
+        var mm = String(today.getMonth() + 1).padStart(2, '0'); //January is 0!
+        var yyyy = today.getFullYear();
+        var hh = String(today.getHours()).padStart(2, '0');
+        var min = String(today.getMinutes()).padStart(2, '0');
+
+        today = yyyy + '-' + mm + '-' + dd + 'T' + hh + ':' + min;
+
+        // Đặt ngày hôm nay là ngày nhỏ nhất có thể chọn
+        $('.date-input').attr('min', today);
+
+
+        $(document).ready(function() {
+
+            $('form').each(function() {
+                var formId = $(this).attr('id');
+
+                $('#' + formId).on('submit', function(event) {
+                    event.preventDefault();
+
+                    var form = $(this);
+                    var url = form.attr('action');
+
+                    $.ajax({
+                        type: "POST",
+                        url: url,
+                        data: form.serialize(), // serializes the form's elements.
+                        success: function(data)
+                        {
+                            if(data.status === 'notloggedin') {
+                                window.location.href = '/thanhvien/login';
+                            }
+                            // Show the response from the server in the modal
+                            if(data.status === 'failed') {
+                                $('#message'+ data.tbid).html('<h4 style="color: red">' + data.message + '</h4>');
+                            }
+                            else if(data.status === 'success'){
+                                $('#message' + data.tbid).html('<h4 style="color: chartreuse">' + data.message + '</h4>');
+                            }
+                        },
+                        error: function(data) {
+                            console.log(data);
+                        }
+                    });
+                });
+            });
+
+
+        });
+
+
+
+    </script>
+</body>
+</html>

@@ -1,0 +1,52 @@
+<div th:fragment="content">
+
+        <div>
+            <a th:href="@{/thanhvien/register}">
+                Thêm mới thành viên
+            </a>
+
+            <a th:href="@{/thanhvien/check}">
+                Kiểm tra vào khu học tập
+            </a>
+
+            <a href="">
+                Thêm bằng excel
+            </a>
+
+            <a href="">
+                Xóa theo điều kiện
+            </a>
+        </div>
+
+        <table>
+            <thead>
+            <tr>
+                <th>Id</th>
+                <th>Tên</th>
+                <th>Khoa</th>
+                <th>Ngành</th>
+                <th>Số địn thọi</th>
+                <th>Email</th>
+                <th>Thao tác</th>
+            </tr>
+            </thead>
+
+            <tbody>
+            <tr th:each="tv : ${dsThanhVien}">
+                <td th:text="${tv.id}"></td>
+                <td th:text="${tv.ten}"></td>
+                <td th:text="${tv.khoa.ten}"></td>
+                <td th:text="${tv.nganh.ten}"></td>
+                <td th:text="${tv.sodienthoai}"></td>
+                <td th:text="${tv.email}"></td>
+                <td>
+                    <a th:href="@{/thanhvien/edit(tvId=${tv.id})}">Sửa</a>
+                    <a th:href="@{/thanhvien/delete(tvId=${tv.id})}"
+                       onclick="if (!(confirm('Bạn có chắc chắn muốn xóa không?'))) return false"
+                    >Xóa</a>
+                </td>
+            </tr>
+            </tbody>
+
+        </table>
+    </div>
