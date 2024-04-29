@@ -20,22 +20,25 @@ import java.util.List;
 @RequestMapping("/thanhvien")
 public class thanhvienController {
 
-    thanhvienService thanhvienService;
-    khoaService khoaService;
-    nganhService nganhService;
-    thanhvienSequenceService thanhvienSequenceService;
-    thongtinSuDungService thongtinSuDungService;
+    private final thanhvienService thanhvienService;
+    private final khoaService khoaService;
+    private final nganhService nganhService;
+    private final thanhvienSequenceService thanhvienSequenceService;
+    private final thongtinSuDungService thongtinSuDungService;
+    private final EmailService emailService;
 
     public thanhvienController(thanhvienService thanhvienService,
                                khoaService khoaService,
                                nganhService nganhService,
                                thanhvienSequenceService thanhvienSequenceService,
-                               thongtinSuDungService thongtinSuDungService) {
+                               thongtinSuDungService thongtinSuDungService,
+                               EmailService emailService) {
         this.thanhvienService = thanhvienService;
         this.khoaService = khoaService;
         this.nganhService = nganhService;
         this.thanhvienSequenceService = thanhvienSequenceService;
         this.thongtinSuDungService = thongtinSuDungService;
+        this.emailService = emailService;
     }
 
     @GetMapping("/all")
@@ -401,5 +404,11 @@ public class thanhvienController {
     public String forgotPassword(@RequestParam("email") String email, Model model){
 
         return "thanhvien/forgot-password";
+    }
+
+    @ExceptionHandler(MethodArgumentTypeMismatchException.class)
+    public String handleMethodArgumentTypeMismatchException(MethodArgumentTypeMismatchException e, Model model) {
+        model.addAttribute("message", "ID không hợp lệ");
+        return "error";
     }
 }
