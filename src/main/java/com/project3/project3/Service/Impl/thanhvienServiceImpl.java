@@ -45,6 +45,10 @@ public class thanhvienServiceImpl implements thanhvienService {
         return thanhvienRepository.findById(id).get();
     }
 
+    @Override
+    public thanhvien findByEmail(String email) {
+        return thanhvienRepository.getByEmail(email);
+    }
 
     @Override
     public ThanhVienDTO modelToDTO(thanhvien tv){

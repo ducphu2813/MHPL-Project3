@@ -14,7 +14,9 @@ import org.springframework.validation.BindingResult;
 import org.springframework.web.bind.annotation.*;
 import org.springframework.web.method.annotation.MethodArgumentTypeMismatchException;
 
+import java.util.HashMap;
 import java.util.List;
+import java.util.Map;
 
 @Controller
 @RequestMapping("/thanhvien")
@@ -401,9 +403,32 @@ public class thanhvienController {
     }
 
     @PostMapping("/forgotPassword")
-    public String forgotPassword(@RequestParam("email") String email, Model model){
+    @ResponseBody
+    public Map<String, String> forgotPassword(@RequestParam("email") String email, Model model){
 
-        return "thanhvien/forgot-password";
+        Map<String, String> response = new HashMap<>();
+
+        thanhvien tv = thanhvienService.findByEmail(email);
+
+        if(tv == null){
+            response.put("status", "failed");
+            response.put("message", "Email không tồn tại");
+            return response;
+        }
+        else{
+            response.put("status", "success");
+            response.put("message", "Email tồn tại");
+            email = email.trim();
+            emailService.sendSimpleMessage(email, "Your verification code", "Your verification code is: test");
+            return response;
+        }
+
+    }
+
+    @GetMapping("/verify")
+    public String verifyForm(Model model){
+
+        return "thanhvien/VerificateCode";
     }
 
     @ExceptionHandler(MethodArgumentTypeMismatchException.class)

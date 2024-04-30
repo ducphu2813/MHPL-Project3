@@ -14,10 +14,11 @@ public class EmailService {
 
     public void sendSimpleMessage(String to, String subject, String text) {
         SimpleMailMessage message = new SimpleMailMessage();
-        message.setFrom("Hệ thống quản lý thành viên");
-        message.setTo(to);
+        message.setFrom("gameservice4me@gmail.com");
+        message.setTo(to.trim());
         message.setSubject(subject);
         message.setText(text);
+
         emailSender.send(message);
     }
 }

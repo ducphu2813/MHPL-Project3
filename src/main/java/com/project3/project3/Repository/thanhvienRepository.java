@@ -14,4 +14,6 @@ public interface thanhvienRepository extends JpaRepository<thanhvien, Long> {
     @Query("SELECT tv FROM thanhvien tv " +
             "WHERE tv.id = :id AND tv.password = :password")
     thanhvien checkLogin(@Param("id") Long id, @Param("password") String password);
+
+    thanhvien getByEmail(String email);
 }

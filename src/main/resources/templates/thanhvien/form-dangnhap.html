@@ -43,9 +43,9 @@
                 <span th:text="${message}"></span>
             </div>
 
-            Chưa có tài khoản? <a href="/thanhvien/register">Đăng ký</a><br><br>
+            Chưa có tài khoản? <a th:href="@{/thanhvien/register}">Đăng ký</a><br><br>
 
-            Quên mật khẩu? <a href="#">Lấy lại mật khẩu</a><br><br>
+            Quên mật khẩu? <a th:href="@{/thanhvien/forgotPassword}">Lấy lại mật khẩu</a><br><br>
 
             <input type="submit" value="Đăng nhập">
         </form>

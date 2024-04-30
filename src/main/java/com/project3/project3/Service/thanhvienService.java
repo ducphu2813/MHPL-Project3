@@ -11,6 +11,8 @@ public interface thanhvienService {
 
     thanhvien findById(Long id);
 
+    thanhvien findByEmail(String email);
+
     thanhvien findByTen(String ten);
 
     ThanhVienDTO modelToDTO(thanhvien tv);
