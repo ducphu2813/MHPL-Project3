@@ -30,7 +30,7 @@
         <input type="submit" value="Kiểm tra">
     </form>
 
-    <div th:if="${check == 2}">
+    <div th:if="${check == 2}" id="welcome-message">
         <p>Chào mừng <label th:text="${tv.ten}"></label> đến khu học tập</p>
     </div>
 
@@ -50,8 +50,9 @@
             var tvId = tvIdInput.value;
 
             if (!Number.isInteger(Number(tvId))) {
-                document.getElementById('message').innerText = 'Mã thành viên phải là số.';
-                // alert('Mã thành viên phải là số.');
+                // document.getElementById('message').innerText = 'Mã thành viên phải là số.';
+                alert('Mã thành viên phải là số.');
+                $('#welcome-message').html('');
                 event.preventDefault();
             }
         });

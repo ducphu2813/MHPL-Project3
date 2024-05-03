@@ -1,0 +1,156 @@
+<div th:fragment="content">
+
+    <div>
+        <a th:href="@{/xuly/add}">
+            Thêm mới xử lý
+        </a>
+    </div>
+
+    <!--    Tab link-->
+    <div class="container">
+
+        <ul class="tab nav nav-tabs">
+            <li class="nav-item"><a class="tablinks nav-link active" onclick="openContent(event, 'all')">Tất cả</a></li>
+            <li class="nav-item"><a class="tablinks nav-link" onclick="openContent(event, 'false')">Chưa xử lý</a></li>
+            <li class="nav-item"><a class="tablinks nav-link" onclick="openContent(event, 'true')">Đã xử lý</a></li>
+        </ul>
+    </div>
+
+<!--    Tab content-->
+
+<!--    Bảng tất cả-->
+
+    <div>
+        <div id="all" class="tabcontent" style="display: block">
+            <table>
+                <thead>
+                <tr>
+                    <th>Thành viên</th>
+                    <th>Lý do</th>
+                    <th>Hình thức xử lý</th>
+                    <th>Ngày xử lý</th>
+                    <th>Tiền phạt</th>
+                    <th>Số ngày bị cấm</th>
+                    <th>Trạng thái</th>
+                    <th>Thao tác</th>
+                </tr>
+                </thead>
+
+                <tbody>
+                <tr th:each="xuly : ${dsXuly}">
+                    <td th:text="${xuly.thanhvien.id} + ' - ' + ${xuly.thanhvien.ten}"></td>
+                    <td th:text="${xuly.lydo}"></td>
+                    <td th:text="${xuly.hinhthuc_xuly.hinhthuc}"></td>
+                    <td th:text="${xuly.ngay_xuly}"></td>
+                    <td th:text="${xuly.tienphat != null ? xuly.tienphat : 'Không có'}"></td>
+                    <td th:text="${xuly.hinhthuc_xuly.songay_ban != null ? xuly.hinhthuc_xuly.songay_ban : 'Không có'}"></td>
+                    <td th:text="${xuly.trangthai ? 'Đã xử lý' : 'Chưa xử lý'}"></td>
+                    <td>
+                        <a th:href="@{/xuly/delete(id=${xuly.id})}"
+                           onclick="if(!(confirm('Xác nhận xóa?'))) return false"
+                        >Xóa</a>
+                    </td>
+                </tr>
+                </tbody>
+
+            </table>
+        </div>
+
+        <!--    Bảng đã xử lý-->
+        <div id="true" class="tabcontent" style="display: none">
+            <table>
+                <thead>
+                <tr>
+                    <th>Thành viên</th>
+                    <th>Lý do</th>
+                    <th>Hình thức xử lý</th>
+                    <th>Ngày xử lý</th>
+                    <th>Tiền phạt</th>
+                    <th>Số ngày bị cấm</th>
+                    <th>Trạng thái</th>
+                    <th>Thao tác</th>
+                </tr>
+                </thead>
+
+                <tbody>
+                <tr th:each="xuly : ${dsXulyTrue}">
+                    <td th:text="${xuly.thanhvien.id} + ' - ' + ${xuly.thanhvien.ten}"></td>
+                    <td th:text="${xuly.lydo}"></td>
+                    <td th:text="${xuly.hinhthuc_xuly.hinhthuc}"></td>
+                    <td th:text="${xuly.ngay_xuly}"></td>
+                    <td th:text="${xuly.tienphat != null ? xuly.tienphat : 'Không có'}"></td>
+                    <td th:text="${xuly.hinhthuc_xuly.songay_ban != null ? xuly.hinhthuc_xuly.songay_ban : 'Không có'}"></td>
+                    <td th:text="${xuly.trangthai ? 'Đã xử lý' : 'Chưa xử lý'}"></td>
+                    <td>
+                        <a th:href="@{/xuly/delete(id=${xuly.id})}"
+                           onclick="if(!(confirm('Xác nhận xóa?'))) return false"
+                        >Xóa</a>
+                    </td>
+                </tr>
+                </tbody>
+            </table>
+        </div>
+
+        <!--    Bảng chưa xử lý-->
+        <div id="false" class="tabcontent" style="display: none">
+            <table>
+                <thead>
+                <tr>
+                    <th>Thành viên</th>
+                    <th>Lý do</th>
+                    <th>Hình thức xử lý</th>
+                    <th>Ngày xử lý</th>
+                    <th>Tiền phạt</th>
+                    <th>Số ngày bị cấm</th>
+                    <th>Trạng thái</th>
+                    <th>Thao tác</th>
+                </tr>
+                </thead>
+
+                <tbody>
+                <tr th:each="xuly : ${dsXulyFalse}">
+                    <td th:text="${xuly.thanhvien.id} + ' - ' + ${xuly.thanhvien.ten}"></td>
+                    <td th:text="${xuly.lydo}"></td>
+                    <td th:text="${xuly.hinhthuc_xuly.hinhthuc}"></td>
+                    <td th:text="${xuly.ngay_xuly}"></td>
+                    <td th:text="${xuly.tienphat != null ? xuly.tienphat : 'Không có'}"></td>
+                    <td th:text="${xuly.hinhthuc_xuly.songay_ban != null ? xuly.hinhthuc_xuly.songay_ban : 'Không có'}"></td>
+                    <td th:text="${xuly.trangthai ? 'Đã xử lý' : 'Chưa xử lý'}"></td>
+                    <td>
+                        <a th:href="@{/xuly/handle(id=${xuly.id})}"
+                           onclick="if(!(confirm('Xác nhận xử lý?'))) return false"
+                        >Xử lý</a>
+
+                        <a th:href="@{/xuly/delete(id=${xuly.id})}"
+                           onclick="if(!(confirm('Xác nhận xóa?'))) return false"
+                        >Xóa</a>
+                    </td>
+                </tr>
+                </tbody>
+            </table>
+        </div>
+    </div>
+
+
+
+
+    <script>
+        function openContent(evt, contentName) {
+            var i, tabcontent, tablinks;
+
+            tabcontent = document.getElementsByClassName("tabcontent");
+            for (i = 0; i < tabcontent.length; i++) {
+                tabcontent[i].style.display = "none";
+            }
+
+            tablinks = document.getElementsByClassName("tablinks");
+            for (i = 0; i < tablinks.length; i++) {
+            }
+
+            document.getElementById(contentName).style.display = "block";
+
+        }
+    </script>
+
+
+</div>

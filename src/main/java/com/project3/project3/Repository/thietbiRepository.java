@@ -24,10 +24,24 @@ public interface thietbiRepository extends JpaRepository<thietbi, Integer> {
             "tsd.ngaymuon IS NOT NULL) ")
     List<thietbi> findNotBorrowedByName(@Param("name") String name);
 
+    //tìm tất cả thiết bị đang rảnh rỗi, và không được đặt chỗ trong hôm nay
+    @Query("SELECT tb FROM thietbi tb " +
+            "WHERE tb.id NOT IN " +
+            "(SELECT tsd.thietbi.id FROM thongtin_sudung tsd " +
+            "WHERE tsd.ngaytra IS NULL AND " +
+            "tsd.ngaymuon IS NOT NULL) " +
+            "AND tb.id NOT IN " +
+            "(SELECT tsd.thietbi.id FROM thongtin_sudung tsd " +
+            "WHERE tsd.tg_datcho IS NOT NULL AND " +
+            "CAST(tsd.tg_datcho AS date) = CAST(CURRENT_DATE AS date))")
+    List<thietbi> findAvailable();
+
     //tìm kiếm thiết bị đang được mượn theo tên, ko thể đặt chỗ
     @Query("SELECT tb FROM thietbi tb " +
             "WHERE tb.ten LIKE CONCAT('%', :name, '%') AND " +
             "tb.id IN (SELECT tsd.thietbi.id FROM thongtin_sudung tsd WHERE tsd.ngaytra IS NULL AND tsd.ngaymuon IS NOT NULL)")
     List<thietbi> findBorrowedByName(@Param("name") String name);
+
+
 
 }

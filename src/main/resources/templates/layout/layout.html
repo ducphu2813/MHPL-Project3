@@ -6,27 +6,63 @@
           content="width=device-width, user-scalable=no, initial-scale=1.0, maximum-scale=1.0, minimum-scale=1.0">
     <meta http-equiv="X-UA-Compatible" content="ie=edge">
     <link rel="stylesheet" href="/css/layout.css">
+    <link rel="stylesheet" href="https://stackpath.bootstrapcdn.com/bootstrap/4.3.1/css/bootstrap.min.css">
+    <script src="https://code.jquery.com/jquery-3.3.1.slim.min.js"></script>
+    <script src="https://code.jquery.com/jquery-3.6.0.min.js"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/popper.js/1.14.7/umd/popper.min.js"></script>
+    <script src="https://stackpath.bootstrapcdn.com/bootstrap/4.3.1/js/bootstrap.min.js"></script>
     <title>Document</title>
 </head>
 <body>
-    <nav>
-        <ul>
-            <li><a th:href="@{/thanhvien/all}">Danh sách thành viên</a></li>
-            <li><a th:href="@{/thietbi/all}">Danh sách thiết bị</a></li>
-        </ul>
-    </nav>
 
-    <div th:if="${dsThanhVien != null}">
-        <div th:replace="~{thanhvien/thanhvien-layout :: content}">
+    <div class="container">
 
-        </div>
+        <div>
+
+
+                <div class="container">
+                    <ul class="nav">
+                        <li class="nav-item"><a class="nav-link active" th:href="@{/thanhvien/all}">Danh sách thành viên</a></li>
+                        <li class="nav-item"><a class="nav-link" th:href="@{/thietbi/all}">Danh sách thiết bị</a></li>
+                        <li class="nav-item"><a class="nav-link" th:href="@{/xuly/all}">Danh sách vi phạm</a></li>
+                        <li class="nav-item"><a class="nav-link" th:href="@{/ttsd/all}">Danh sách thông tin sử dụng</a></li>
+                        <li class="nav-item"><a class="nav-link" href="#">Thống kê vào</a></li>
+
+
+                    </ul>
+                </div>
+
+
+                <div class="container">
+                    <div th:if="${dsThanhVien != null}">
+                        <div th:replace="~{thanhvien/thanhvien-layout :: content}">
+
+                        </div>
+                    </div>
+
+                    <div th:if="${dsThietBi != null}">
+                        <div th:replace="~{thietbi/thietbi-layout :: content}">
+
+                        </div>
+                    </div>
+
+                    <div th:if="${section == 'ttsd'}">
+                        <div th:replace="~{thongtin-sudung/thongtinSuDung-layout :: content}">
+
+                        </div>
+                    </div>
+
+                    <div th:if="${section == 'xuly'}">
+                        <div th:replace="~{xuly/xuly-layout :: content}">
+
+                        </div>
+                    </div>
+                </div>
+
+            </div>
+
     </div>
 
-    <div th:if="${dsThietBi != null}">
-        <div th:replace="~{thietbi/thietbi-layout :: content}">
-
-        </div>
-    </div>
 
 
     <script src="/js/navigator-thietbiLayout.js"></script>

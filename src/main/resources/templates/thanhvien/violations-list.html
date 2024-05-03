@@ -1,7 +1,15 @@
-<div th:fragment="component">
-    <div>
-        <h1>Danh sách vi phạm</h1>
-    </div>
+<!doctype html>
+<html lang="en" xmlns:th="http://www.thymeleaf.org">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport"
+          content="width=device-width, user-scalable=no, initial-scale=1.0, maximum-scale=1.0, minimum-scale=1.0">
+    <meta http-equiv="X-UA-Compatible" content="ie=edge">
+    <title>Document</title>
+</head>
+<body>
+    <h2>Bạn không thể đặt chỗ thiết bị vì bạn đang có vi phạm chưa được xử lý</h2>
+
     <div>
         <table>
             <tr>
@@ -10,7 +18,6 @@
                 <th>Hình thức xử lý</th>
                 <th>Trạng thái</th>
                 <th>Tiền phạt</th>
-                <th>Số ngày bị cấm</th>
             </tr>
 
             <tr th:each="vipham : ${dsXuly}">
@@ -19,9 +26,9 @@
                 <td th:text="${vipham.hinhthuc_xuly.hinhthuc}"></td>
                 <td th:text="${vipham.trangthai ? 'Đã xử lý' : 'Chưa xử lý'}"></td>
                 <td th:text="${vipham.tienphat != null ? vipham.tienphat : 'Không có'}"></td>
-                <td th:text="${vipham.hinhthuc_xuly.songay_ban != null ? vipham.hinhthuc_xuly.songay_ban : 'Không có'}"></td>
             </tr>
 
         </table>
     </div>
-</div>
+</body>
+</html>

@@ -16,6 +16,18 @@ public interface thongtinSuDungRepository extends JpaRepository<thongtin_sudung,
     List<thongtin_sudung> findByThietbiIdAndTg_datcho(@Param("tbId") Integer tbId, @Param("tg_datcho") LocalDateTime tg_datcho);
 
 
+    //tìm tất cả thông tin sử dụng có ngày mượn không null, ngày trả null(nghĩa là đang được mượn)
+    @Query("SELECT tsd FROM thongtin_sudung tsd WHERE tsd.ngaymuon IS NOT NULL AND tsd.ngaytra IS NULL")
+    List<thongtin_sudung> findBorrowing();
+
+    //tìm tất cả thông tin sử dụng có ngày mượn không null, ngày trả không null
+    @Query("SELECT tsd FROM thongtin_sudung tsd WHERE tsd.ngaymuon IS NOT NULL AND tsd.ngaytra IS NOT NULL")
+    List<thongtin_sudung> findReturned();
+
+    //tìm tất cả thông tin sử dụng có thời gian đặt chỗ không null, ngày mượn null, ngày trả null
+    @Query("SELECT tsd FROM thongtin_sudung tsd WHERE tsd.tg_datcho IS NOT NULL AND tsd.ngaymuon IS NULL AND tsd.ngaytra IS NULL")
+    List<thongtin_sudung> findDatCho();
+
     //tìm những thông tin sử dụng đang được mượn theo id thành viên
     @Query("SELECT tsd FROM thongtin_sudung tsd WHERE tsd.thanhvien.id = :tvId AND tsd.ngaytra IS NULL AND tsd.tg_datcho IS NULL")
     List<thongtin_sudung> findBorrowingByThanhvienId(@Param("tvId") Long tvId);
@@ -27,4 +39,10 @@ public interface thongtinSuDungRepository extends JpaRepository<thongtin_sudung,
     //tìm những lần đặt chỗ theo id thành viên
     @Query("SELECT tsd FROM thongtin_sudung tsd WHERE tsd.thanhvien.id = :tvId AND tsd.tg_datcho IS NOT NULL AND tsd.ngaymuon IS NULL AND tsd.ngaytra IS NULL")
     List<thongtin_sudung> findDatChoByThanhvienId(@Param("tvId") Long tvId);
+
+    //tìm những thông tin sử dụng đang được mượn theo id thiết bị
+    @Query("SELECT tsd FROM thongtin_sudung tsd WHERE tsd.thietbi.id = :tbId AND tsd.ngaymuon IS NOT NULL AND tsd.ngaytra IS NULL")
+    List<thongtin_sudung> findBorrowingByThietbiId(@Param("tbId") Integer tbId);
+
+
 }

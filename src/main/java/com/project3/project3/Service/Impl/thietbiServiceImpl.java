@@ -39,7 +39,7 @@ public class thietbiServiceImpl implements thietbiService {
         return thietbiRepository.findNotBorrowedByName(name);
     }
 
-    //tìm kiếm thiết bị đang được mượn
+    //tìm kiếm thiết bị đang được mượn theo tên
     @Override
     public List<thietbi> findBorrowedByName(String name) {
         return thietbiRepository.findBorrowedByName(name);
@@ -53,6 +53,12 @@ public class thietbiServiceImpl implements thietbiService {
     @Override
     public thietbi findById(Integer id) {
         return thietbiRepository.findById(id).orElse(null);
+    }
+
+    //lấy những thiết bị đang rảnh rỗi(ko có đang mượn và không có đặt chỗ trong ngày hôm nay)
+    @Override
+    public List<thietbi> findAvailable() {
+        return thietbiRepository.findAvailable();
     }
 
     @Transactional

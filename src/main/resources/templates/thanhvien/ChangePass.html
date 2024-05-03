@@ -1,5 +1,5 @@
 <!doctype html>
-<html lang="en" xmlns:th="http://www.thymeleaf.org">
+<html lang="en">
 <head>
     <meta charset="UTF-8">
     <meta name="viewport"
@@ -11,12 +11,11 @@
     <script src="https://cdnjs.cloudflare.com/ajax/libs/popper.js/1.14.7/umd/popper.min.js"></script>
     <script src="https://stackpath.bootstrapcdn.com/bootstrap/4.3.1/js/bootstrap.min.js"></script>
     <title>Document</title>
-<!--    Thằng này dùng để đổi sau khi nhập mã-->
 </head>
 <body>
     <h2>Đổi mật khẩu mới</h2>
 
-    <form th:action="@{/thanhvien/changeForgotPassword}" method="post">
+    <form th:action="@{/thanhvien/changePassword}" method="post">
         <input type="password" name="password" placeholder="Nhập mật khẩu mới">
         <input type="password" name="repassword" placeholder="Nhập lại mật khẩu mới">
         <input type="submit" value="Đổi mật khẩu">
@@ -45,6 +44,10 @@
                         }
                         else if(data.status === 'success'){
                             $('#message').html('<h4 style="color: chartreuse">' + data.message + '</h4>');
+                            alert('Đổi mật khẩu thành công');
+                            window.location.href = '/thanhvien/home';
+                        }
+                        else if(data.status === 'notlogin'){
                             window.location.href = '/thanhvien/login';
                         }
                     },
@@ -55,5 +58,6 @@
             });
         });
     </script>
+
 </body>
 </html>

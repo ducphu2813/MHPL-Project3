@@ -14,21 +14,47 @@ import org.springframework.web.bind.annotation.*;
 import java.time.LocalDateTime;
 import java.util.HashMap;
 import java.util.Map;
+import java.util.NoSuchElementException;
 
 @Controller
 @RequestMapping("/ttsd")
 public class thongtinSuDungController {
 
     thongtinSuDungService thongtinSuDungService;
-
     thietbiService thietbiService;
-
     thanhvienService thanhvienService;
 
     public thongtinSuDungController(thongtinSuDungService thongtinSuDungService, thietbiService thietbiService, thanhvienService thanhvienService) {
         this.thongtinSuDungService = thongtinSuDungService;
         this.thietbiService = thietbiService;
         this.thanhvienService = thanhvienService;
+    }
+
+    @GetMapping("/all")
+    public String getAll(Model model){
+
+        model.addAttribute("section", "ttsd");
+
+        //danh sách tất cả
+        model.addAttribute("dsThongTinSuDung", thongtinSuDungService.getAll());
+
+        //danh sách đang được mượn
+        model.addAttribute("dsDangMuon",  thongtinSuDungService.findBorrowing());
+
+        //danh sách đã trả
+        model.addAttribute("dsDaTra", thongtinSuDungService.findReturned());
+
+        //danh sách đặt chỗ
+        model.addAttribute("dsDatCho", thongtinSuDungService.findDatCho());
+
+        return "layout/layout";
+    }
+
+    @GetMapping("/rentingForm")
+    public String rentingForm(Model model){
+
+
+        return "thietbi/renting-form";
     }
 
     @PostMapping("/book")
@@ -73,5 +99,166 @@ public class thongtinSuDungController {
 
 
         return response;
+    }
+
+    @PostMapping("/findTV")
+    @ResponseBody
+    public Map<String, String> findTV(@RequestParam("TvId") String tvId,
+                                      HttpSession session, Model model){
+
+        Map<String, String> response = new HashMap<>();
+
+        try{
+            long tvIdLong = Long.parseLong(tvId);
+            if(thanhvienService.isBanned(Long.parseLong(tvId))){
+                response.put("status", "banned");
+                response.put("message", "Thành viên này bị cấm mượn thiết bị");
+                response.put("info", tvId + " - "+ thanhvienService.findById(tvIdLong).getTen());
+                return response;
+            }
+            else{
+                response.put("status", "success");
+                response.put("message", "Thành viên có thể mượn thiết bị");
+                response.put("info", tvId + " - "+ thanhvienService.findById(tvIdLong).getTen());
+                return response;
+            }
+        }
+        catch (NoSuchElementException e) {
+            response.put("status", "error");
+            response.put("message", "Không tìm thấy thành viên");
+            return response;
+        }
+        catch (NumberFormatException e) {
+            response.put("status", "error");
+            response.put("message", "Mã chỉ chứa số, không chứa kí tự khác");
+            return response;
+        }
+    }
+
+    @PostMapping("/findTB")
+    @ResponseBody
+    public Map<String, String> findTB(@RequestParam("TbId") String tbId,
+                                      HttpSession session, Model model){
+
+        Map<String, String> response = new HashMap<>();
+
+        try{
+            int tbIdInt = Integer.parseInt(tbId);
+            if(!thongtinSuDungService.canBeBorrowed(tbIdInt)){
+                response.put("status", "borrowed");
+                response.put("message", "Thiết bị không thể cho mượn(đang được mượn hoặc đã được đặt chỗ trong hôm nay)");
+                response.put("info", tbId + " - "+ thietbiService.findById(tbIdInt).getTen());
+                return response;
+            }
+            else{
+                response.put("status", "success");
+                response.put("message", "Thiết bị có thể mượn");
+                response.put("info", tbId + " - "+ thietbiService.findById(tbIdInt).getTen());
+                return response;
+            }
+        }
+        catch (NoSuchElementException | NullPointerException e) {
+            response.put("status", "error");
+            response.put("message", "Không tìm thấy thiết bị");
+            return response;
+        }
+        catch (NumberFormatException e) {
+            response.put("status", "error");
+            response.put("message", "Mã chỉ chứa số, không chứa kí tự khác");
+            return response;
+        }
+
+    }
+
+    @PostMapping("/borrow")
+    @ResponseBody
+    public Map<String, Map> borrow(@RequestParam("TbId") String tbId,
+                                      @RequestParam("TvId") String tvId,
+                                      HttpSession session, Model model){
+
+        Map<String, String> rentResponse = new HashMap<>();
+
+        Map<String, String> tbResponse = findTB(tbId, session, model);
+        Map<String, String> tvResponse = findTV(tvId, session, model);
+
+        if(!tbResponse.get("status").equals("success") || !tvResponse.get("status").equals("success")){
+            rentResponse.put("status", "failed");
+            rentResponse.put("message", "Cho mượn thất bại");
+
+        }
+        else if(tbResponse.get("status").equals("success") && tvResponse.get("status").equals("success")){
+            rentResponse.put("status", "success");
+            rentResponse.put("message", "Cho mượn thành công");
+
+            //khi xác thực thông tin thành công, thì thực hiện cho mượn
+            thongtin_sudung tsd = new thongtin_sudung();
+            tsd.setNgaymuon(LocalDateTime.now());
+            tsd.setThanhvien(thanhvienService.findById(Long.parseLong(tvId)));
+            tsd.setThietbi(thietbiService.findById(Integer.parseInt(tbId)));
+            thongtinSuDungService.save(tsd);
+        }
+
+        Map<String, Map> response = new HashMap<>();
+        response.put("rentResponse", rentResponse);
+        response.put("tbResponse", tbResponse);
+        response.put("tvResponse", tvResponse);
+
+
+        return response;
+    }
+
+    @GetMapping("/returnOne")
+    public String returnOneForm(@RequestParam("ttsdId") String ttsdId){
+
+        thongtin_sudung tsd = thongtinSuDungService.findById(Integer.parseInt(ttsdId));
+        tsd.setNgaytra(LocalDateTime.now());
+        thongtinSuDungService.save(tsd);
+
+        return "redirect:/thietbi/all";
+    }
+
+    @GetMapping("/return")
+    public String returnForm(Model model){
+
+        return "thietbi/return-form";
+    }
+
+    @PostMapping("/return")
+    @ResponseBody
+    public Map<String, String> returnTB(@RequestParam("TbId") String tbId,
+                                      HttpSession session, Model model){
+
+        Map<String, String> response = new HashMap<>();
+
+        try{
+            int tbIdInt = Integer.parseInt(tbId);
+            thongtin_sudung tsd = thongtinSuDungService.getBorrowingByThietbiId(tbIdInt);
+
+            if(tsd == null){
+                response.put("status", "failed");
+                response.put("message", "Thiết bị không được mượn");
+                response.put("info", tbId + " - "+ thietbiService.findById(tbIdInt).getTen());
+                return response;
+            }
+
+            tsd.setNgaytra(LocalDateTime.now());
+            thongtinSuDungService.save(tsd);
+
+            response.put("status", "success");
+            response.put("message", "Trả thiết bị thành công");
+            response.put("info", tbId + " - "+ thietbiService.findById(tbIdInt).getTen());
+            return response;
+        }
+        catch (NoSuchElementException | NullPointerException e) {
+            response.put("status", "error");
+            response.put("message", "Không tìm thấy thiết bị");
+            return response;
+        }
+        catch (NumberFormatException e) {
+            response.put("status", "error");
+            response.put("message", "Mã chỉ chứa số, không chứa kí tự khác");
+            return response;
+        }
+
     }
 }

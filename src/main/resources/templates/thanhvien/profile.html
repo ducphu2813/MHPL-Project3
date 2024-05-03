@@ -30,4 +30,28 @@
         <span th:text="${session.thanhvien.tenNganh}"></span><br>
 
     </div>
+
+    <div th:if="${dsXuly.size() != 0}">
+        <h3>Bạn đang có những vi phạm chưa được xử lý</h3>
+
+        <table class="table table-bordered table-striped table-hover">
+            <thead class="table-dark">
+                <tr>
+                    <th>Lý do</th>
+                    <th>Hình thức xử lý</th>
+                    <th>Ngày xử lý</th>
+                    <th>Tiền phạt</th>
+                </tr>
+            </thead>
+
+            <tbody>
+                <tr th:each="vp : ${dsXuly}">
+                    <td th:text="${vp.lydo}"></td>
+                    <td th:text="${vp.hinhthuc_xuly.hinhthuc}"></td>
+                    <td th:text="${vp.ngay_xuly}"></td>
+                    <td th:text="${vp.tienphat != null ? vp.tienphat : 'Không có'}"></td>
+                </tr>
+            </tbody>
+        </table>
+    </div>
 </div>

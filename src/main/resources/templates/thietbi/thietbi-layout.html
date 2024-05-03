@@ -9,23 +9,24 @@
             Thêm bằng excel
         </a>
 
-        <a href="">
+        <a th:href="@{/ttsd/rentingForm}">
             Cho mượn thiết bị
         </a>
 
-        <a href="">
+        <a th:href="@{/ttsd/return}">
             Trả thiết bị
         </a>
 
-        <a href="">
+        <a href="#">
             Xóa theo loại thiết bị
         </a>
     </div>
 
 <!--    Tab link-->
     <div class="tab">
-        <button class="tablinks" onclick="openContent(event, 'all')">Tất cả</button>
-        <button class="tablinks" onclick="openContent(event, 'free')">Thiết bị rảnh</button>
+        <button class="tablinks nav nav-tabs" onclick="openContent(event, 'all')">Tất cả</button>
+        <button class="tablinks nav nav-tabs" onclick="openContent(event, 'free')">Thiết bị rảnh</button>
+        <button class="tablinks nav nav-tabs" onclick="openContent(event, 'renting')">Đang mượn</button>
     </div>
 
 <!--    Tab content-->
@@ -63,7 +64,7 @@
 
 <!--    bảng thiết bị đang rảnh-->
     <div id="free" class="tabcontent" style="display: none">
-        this is free table
+<!--        this is free table-->
         <table>
             <thead>
             <tr>
@@ -76,11 +77,55 @@
             </thead>
 
             <tbody>
-
+                <tr th:each="tb : ${dsRanh}">
+                    <td th:text="${tb.id}"></td>
+                    <td th:text="${tb.ten}"></td>
+                    <td th:text="${tb.mota}"></td>
+                    <td th:text="${tb.loai_thietbi.ten}"></td>
+                    <td>
+                        <a th:href="@{/thietbi/update(tbId=${tb.id})}">Sửa</a>
+                        <a th:href="@{/thietbi/delete(tbId=${tb.id})}"
+                            onclick="if (!(confirm('Bạn có chắc chắn muốn xóa không?'))) return false"
+                        >Xóa</a>
+                    </td>
+                </tr>
             </tbody>
 
         </table>
     </div>
+
+<!--    Bảng đang được mượn-->
+    <div id="renting" class="tabcontent" style="display: none">
+<!--        this is renting table-->
+        <table>
+            <thead>
+            <tr>
+                <th>Id</th>
+                <th>Tên</th>
+                <th>Người mượn</th>
+                <th>Ngày mượn</th>
+                <th>Thao tác</th>
+            </tr>
+            </thead>
+
+            <tbody>
+                <tr th:each="ttsd : ${dsDangMuon}">
+                    <td th:text="${ttsd.thietbi.id}"></td>
+                    <td th:text="${ttsd.thietbi.ten}"></td>
+                    <td th:text="${ttsd.thanhvien.ten}"></td>
+                    <td th:text="${ttsd.ngaymuon}"></td>
+                    <td>
+                        <a th:href="@{/ttsd/returnOne(ttsdId=${ttsd.id})}"
+                            onclick="if (!(confirm('Xác nhận trả thiết bị?'))) return false"
+                        >Trả</a>
+                    </td>
+                </tr>
+            </tbody>
+
+        </table>
+    </div>
+
+
 
     <script>
 

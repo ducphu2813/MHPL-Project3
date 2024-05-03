@@ -23,6 +23,27 @@ public class xulyServiceImpl implements xulyService {
     }
 
     @Override
+    public List<xuly> getXulyFalse() {
+        return xulyRepository.findByTrangthaiFalse();
+    }
+
+    @Override
+    public List<xuly> getXulyTrue() {
+        return xulyRepository.findByTrangthaiTrue();
+    }
+
+    @Override
+    public List<xuly> getByThanhvienId(Long id) {
+        return xulyRepository.findByThanhvienId(id);
+    }
+
+    //tìm những xử lý chưa được xử lý theo thành viên
+    @Override
+    public List<xuly> getXulyFalseByThanhvien(Long id) {
+        return xulyRepository.findByThanhvienIdAndTrangthaiFalse(id);
+    }
+
+    @Override
     public xuly getById(int id) {
         return xulyRepository.findById(id).orElse(null);
     }

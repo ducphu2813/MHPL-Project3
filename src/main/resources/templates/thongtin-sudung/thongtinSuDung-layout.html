@@ -1,0 +1,127 @@
+<div th:fragment="content">
+
+    <!--    Tab link-->
+    <div class="tab">
+        <button class="tablinks btn btn-secondary" onclick="openContent(event, 'all')">Tất cả</button>
+        <button class="tablinks btn btn-primary" onclick="openContent(event, 'renting')">Đang mượn</button>
+        <button class="tablinks btn btn-primary" onclick="openContent(event, 'returned')">Đã trả</button>
+        <button class="tablinks btn btn-primary" onclick="openContent(event, 'booked')">Đặt chỗ</button>
+    </div>
+
+    <!--    Tab content-->
+
+<!--    Bảng tất cả-->
+    <div id="all" class="tabcontent" style="display: block">
+        <table>
+            <thead>
+                <tr>
+                    <th>Thành viên</th>
+                    <th>Thiết bị</th>
+                    <th>Ngày mượn</th>
+                    <th>Ngày trả</th>
+                    <th>Đặt chỗ</th>
+                </tr>
+            </thead>
+
+            <tbody>
+                <tr th:each="ttsd : ${dsThongTinSuDung}">
+                    <td th:text="${ttsd.thanhvien.id} + ' - ' + ${ttsd.thanhvien.ten}"></td>
+                    <td th:text="${ttsd.thietbi.ten}"></td>
+                    <td th:text="${ttsd.ngaymuon != null ? ttsd.ngaymuon : 'Không có'}"></td>
+                    <td th:text="${ttsd.ngaytra != null ? ttsd.ngaytra : 'Không có'}"></td>
+                    <td th:text="${ttsd.tg_datcho != null ? ttsd.tg_datcho : 'Không có'}"></td>
+                </tr>
+            </tbody>
+
+        </table>
+    </div>
+
+<!--    Bảng đang mượn-->
+    <div id="renting" class="tabcontent" style="display: none">
+        <table>
+            <thead>
+                <tr>
+                    <th>Thành viên</th>
+                    <th>Thiết bị</th>
+                    <th>Ngày mượn</th>
+                </tr>
+            </thead>
+
+            <tbody>
+                <tr th:each="ttsd : ${dsDangMuon}">
+                    <td th:text="${ttsd.thanhvien.id} + ' - ' + ${ttsd.thanhvien.ten}"></td>
+                    <td th:text="${ttsd.thietbi.ten}"></td>
+                    <td th:text="${ttsd.ngaymuon}"></td>
+                </tr>
+            </tbody>
+
+        </table>
+    </div>
+
+<!--    Bảng đã trả-->
+    <div id="returned" class="tabcontent" style="display: none">
+        <table>
+            <thead>
+                <tr>
+                    <th>Thành viên</th>
+                    <th>Thiết bị</th>
+                    <th>Ngày mượn</th>
+                    <th>Ngày trả</th>
+                </tr>
+            </thead>
+
+            <tbody>
+                <tr th:each="ttsd : ${dsDaTra}">
+                    <td th:text="${ttsd.thanhvien.id} + ' - ' + ${ttsd.thanhvien.ten}"></td>
+                    <td th:text="${ttsd.thietbi.ten}"></td>
+                    <td th:text="${ttsd.ngaymuon}"></td>
+                    <td th:text="${ttsd.ngaytra}"></td>
+                </tr>
+            </tbody>
+
+        </table>
+    </div>
+
+
+<!--    Bảng đặt chỗ-->
+    <div id="booked" class="tabcontent" style="display: none">
+        <table>
+            <thead>
+                <tr>
+                    <th>Thành viên</th>
+                    <th>Thiết bị</th>
+                    <th>Ngày đặt chỗ</th>
+                </tr>
+            </thead>
+
+            <tbody>
+                <tr th:each="ttsd : ${dsDatCho}">
+                    <td th:text="${ttsd.thanhvien.id} + ' - ' + ${ttsd.thanhvien.ten}"></td>
+                    <td th:text="${ttsd.thietbi.ten}"></td>
+                    <td th:text="${ttsd.tg_datcho}"></td>
+                </tr>
+            </tbody>
+
+        </table>
+    </div>
+
+    <script>
+        function openContent(evt, contentName) {
+            var i, tabcontent, tablinks;
+
+            tabcontent = document.getElementsByClassName("tabcontent");
+            for (i = 0; i < tabcontent.length; i++) {
+                tabcontent[i].style.display = "none";
+            }
+
+            tablinks = document.getElementsByClassName("tablinks");
+            for (i = 0; i < tablinks.length; i++) {
+                tablinks[i].className = tablinks[i].className.replace(" btn-secondary", " btn-primary");
+            }
+
+            document.getElementById(contentName).style.display = "block";
+            evt.currentTarget.className += evt.currentTarget.className.replace(" btn-primary", " btn-secondary");
+        }
+    </script>
+
+</div>

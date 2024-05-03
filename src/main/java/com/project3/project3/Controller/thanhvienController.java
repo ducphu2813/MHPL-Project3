@@ -1,10 +1,7 @@
 package com.project3.project3.Controller;
 
 import com.project3.project3.DTO.ThanhVienDTO;
-import com.project3.project3.Model.khoa;
-import com.project3.project3.Model.nganh;
-import com.project3.project3.Model.thanhvien;
-import com.project3.project3.Model.thongtin_sudung;
+import com.project3.project3.Model.*;
 import com.project3.project3.Service.*;
 import jakarta.servlet.http.HttpSession;
 import jakarta.validation.Valid;
@@ -14,9 +11,9 @@ import org.springframework.validation.BindingResult;
 import org.springframework.web.bind.annotation.*;
 import org.springframework.web.method.annotation.MethodArgumentTypeMismatchException;
 
-import java.util.HashMap;
-import java.util.List;
-import java.util.Map;
+import java.time.LocalDateTime;
+import java.util.*;
+import java.util.stream.Collectors;
 
 @Controller
 @RequestMapping("/thanhvien")
@@ -27,20 +24,26 @@ public class thanhvienController {
     private final nganhService nganhService;
     private final thanhvienSequenceService thanhvienSequenceService;
     private final thongtinSuDungService thongtinSuDungService;
+    private final xulyService xulyService;
     private final EmailService emailService;
+    private final VerificationCodeService verificationCodeService;
 
     public thanhvienController(thanhvienService thanhvienService,
                                khoaService khoaService,
                                nganhService nganhService,
                                thanhvienSequenceService thanhvienSequenceService,
                                thongtinSuDungService thongtinSuDungService,
-                               EmailService emailService) {
+                               EmailService emailService,
+                               VerificationCodeService verificationCodeService,
+                               xulyService xulyService) {
         this.thanhvienService = thanhvienService;
         this.khoaService = khoaService;
         this.nganhService = nganhService;
         this.thanhvienSequenceService = thanhvienSequenceService;
         this.thongtinSuDungService = thongtinSuDungService;
         this.emailService = emailService;
+        this.verificationCodeService = verificationCodeService;
+        this.xulyService = xulyService;
     }
 
     @GetMapping("/all")
@@ -121,7 +124,7 @@ public class thanhvienController {
         return "redirect:/thanhvien/all";
     }
 
-    //hiện trang home
+    //hiện trang home, thông tin cá nhân và trạng thái vi phạm
     @GetMapping("/home")
     public String home(HttpSession session, Model model){
 
@@ -131,9 +134,12 @@ public class thanhvienController {
             // nếu không có thì chuyển về trang đăng ký
             return "redirect:/thanhvien/login";
         }
+
         ThanhVienDTO tvDTO = (ThanhVienDTO) session.getAttribute("thanhvien");
+        List<xuly> dsChuaXuly = xulyService.getXulyFalseByThanhvien(tvDTO.getId());
 
         model.addAttribute("flag", "profile");
+        model.addAttribute("dsXuly", dsChuaXuly);
 
         return "thanhvien/home";
     }
@@ -146,6 +152,13 @@ public class thanhvienController {
             //kiểm tra trong session có thông tin thành viên không,
             // nếu không có thì chuyển về trang đăng ký
             return "redirect:/thanhvien/login";
+        }
+
+        if(thanhvienService.isBanned(((ThanhVienDTO) session.getAttribute("thanhvien")).getId())){
+
+            List<xuly> dsXuly = xulyService.getXulyFalseByThanhvien(((ThanhVienDTO) session.getAttribute("thanhvien")).getId());
+            model.addAttribute("dsXuly", dsXuly);
+            return "thanhvien/violations-list";
         }
 
 
@@ -168,7 +181,42 @@ public class thanhvienController {
 
         model.addAttribute("flag", "doimatkhau");
 
-        return "thanhvien/thanhvien-doimatkhau";
+        return "thanhvien/ChangePass";
+    }
+
+    @PostMapping("/changePassword")
+    @ResponseBody
+    public Map<String, String> changePassword(@RequestParam("password") String newPass,
+                                              @RequestParam("repassword") String rePass,
+                                              HttpSession session,
+                                              Model model){
+
+        Map<String, String> response = new HashMap<>();
+
+        if(session.getAttribute("thanhvien") == null){
+
+            //kiểm tra trong session có thông tin thành viên không,
+            // nếu không có thì chuyển về trang đăng ký
+            response.put("message", "Hết phiên làm việc, vui lòng đăng nhập lại");
+            response.put("status", "notlogin");
+            return response;
+        }
+
+        ThanhVienDTO tvDTO = (ThanhVienDTO) session.getAttribute("thanhvien");
+
+        if(!newPass.equals(rePass)){
+            response.put("message", "Mật khẩu nhập lại không khớp");
+            response.put("status", "failed");
+            return response;
+        }
+
+        tvDTO.setPassword(newPass);
+
+        thanhvienService.save(tvDTO);
+
+        response.put("message", "Đổi mật khẩu thành công");
+        response.put("status", "success");
+        return response;
     }
 
     @GetMapping("/rentHistory")
@@ -208,7 +256,11 @@ public class thanhvienController {
             return "redirect:/thanhvien/login";
         }
 
+        ThanhVienDTO tvDTO = (ThanhVienDTO) session.getAttribute("thanhvien");
 
+        List<xuly> dsXuly = xulyService.getByThanhvienId(tvDTO.getId());
+
+        model.addAttribute("dsXuly", dsXuly);
 
         model.addAttribute("flag", "vipham");
 
@@ -374,12 +426,14 @@ public class thanhvienController {
     }
 
     @PostMapping("/check")
-    public String check(@RequestParam("tvId") Long tvId, Model model){
+    public String check(@RequestParam("tvId") String tvId, Model model){
+
+        Long tvIdLong = Long.valueOf(tvId);
 
         thanhvien tv = new thanhvien();
 
         try{
-            tv = thanhvienService.findById(tvId);
+            tv = thanhvienService.findById(tvIdLong);
 
             model.addAttribute("check", 2);
             model.addAttribute("tv", tv);
@@ -394,6 +448,7 @@ public class thanhvienController {
         return "thanhvien/checkIn";
     }
 
+    //trang nhập email để lấy mã xác thực
     @GetMapping("/forgotPassword")
     public String forgotPasswordForm(Model model){
 
@@ -402,9 +457,12 @@ public class thanhvienController {
         return "thanhvien/forgot-password";
     }
 
+    //đây là sau khi nhập mail xong, lưu id của thành viên đang đổi mật khẩu vào session
     @PostMapping("/forgotPassword")
     @ResponseBody
-    public Map<String, String> forgotPassword(@RequestParam("email") String email, Model model){
+    public Map<String, String> forgotPassword(@RequestParam("email") String email,
+                                              Model model,
+                                              HttpSession session){
 
         Map<String, String> response = new HashMap<>();
 
@@ -419,16 +477,147 @@ public class thanhvienController {
             response.put("status", "success");
             response.put("message", "Email tồn tại");
             email = email.trim();
-            emailService.sendSimpleMessage(email, "Your verification code", "Your verification code is: test");
+
+            //xử lý tạo và lưu mã xác thực vào db
+            String code = generateVerificationCode();
+            VerificationCode verificationCode = new VerificationCode();
+            verificationCode.setCode(code);
+            verificationCode.setThanhvien(tv);
+            LocalDateTime now = LocalDateTime.now();
+            verificationCode.setCreatedDate(now);
+            verificationCode.setExpiredDate(now.plusMinutes(30));
+            verificationCode.setStatus(false);
+
+            verificationCodeService.save(verificationCode);
+
+            //lưu id của thành viên đang đổi mật khẩu vào session
+            session.setAttribute("newPassTv", verificationCode.getThanhvien().getId());
+
+            //gửi email chứa mã xác thực
+            emailService.sendSimpleMessage(email, "Your verification code", "Your verification code is: "+code);
+
             return response;
         }
 
     }
 
+    //kiểm tra mail xong thì chuyển hướng đến trang nhập mã xác thực
     @GetMapping("/verify")
-    public String verifyForm(Model model){
+    public String verifyForm(Model model, HttpSession session){
+
+        if(session.getAttribute("newPassTv") == null){
+            return "redirect:/thanhvien/forgotPassword";
+        }
 
         return "thanhvien/VerificateCode";
+    }
+
+    //đây là sau khi nhập mã xác thực xong, kiểm tra mã xác thực và chuyển hướng đến trang đổi mật khẩu
+    @PostMapping("/verify")
+    @ResponseBody
+    public Map<String, String> verify(@RequestParam("code") String code,
+                                      Model model,
+                                      HttpSession session){
+
+        Map<String, String> response = new HashMap<>();
+
+        //kiếm mã dựa trên cả id của thành viên đang đổi mật khẩu và mã xác thực
+        VerificationCode verificationCode = verificationCodeService.findByCodeAndThanhvienId(code, (Long) session.getAttribute("newPassTv"));
+
+        if(verificationCode == null){
+            response.put("status", "failed");
+            response.put("message", "Mã xác thực không chính xác");
+            return response;
+        }
+
+        if(verificationCode.isStatus()){
+            response.put("status", "failed");
+            response.put("message", "Mã xác thực đã được sử dụng");
+            return response;
+        }
+
+        LocalDateTime now = LocalDateTime.now();
+
+        if(now.isAfter(verificationCode.getExpiredDate())){
+            response.put("status", "failed");
+            response.put("message", "Mã xác thực đã hết hạn");
+            return response;
+        }
+
+        verificationCode.setStatus(true);
+        verificationCodeService.save(verificationCode);
+
+        session.setAttribute("isVerified", true);
+
+        response.put("status", "success");
+        response.put("message", "Xác thực thành công");
+        return response;
+    }
+
+    //hiện trang đổi mật khẩu
+    @GetMapping("/changeForgotPassword")
+    public String changePasswordForm(Model model, HttpSession session){
+
+        if(session.getAttribute("isVerified") == null || session.getAttribute("newPassTv") == null){
+            return "redirect:/thanhvien/forgotPassword";
+        }
+
+        return "thanhvien/thanhvien-doimatkhau";
+    }
+
+    //đổi mật khẩu, kiểm tra trong session có id thành viên đang đổi mật khẩu không
+    @PostMapping("/changeForgotPassword")
+    @ResponseBody
+    public Map<String, String> changeForgotPassword(@RequestParam("password") String newPass,
+                                 @RequestParam("repassword") String confirmPass,
+                                 HttpSession session,
+                                 Model model){
+
+        Map<String, String> response = new HashMap<>();
+
+        if(session.getAttribute("isVerified") == null || session.getAttribute("newPassTv") == null){
+            response.put("status", "failed");
+            response.put("message", "Không thể đổi mật khẩu, phiên làm việc đã hết hạn");
+        }
+
+        if(!newPass.equals(confirmPass)){
+            response.put("status", "failed");
+            response.put("message", "Mật khẩu nhập lại không khớp");
+            return response;
+        }
+
+        Long tvId = (Long) session.getAttribute("newPassTv");
+
+        thanhvien tv = thanhvienService.findById(tvId);
+
+        tv.setPassword(newPass);
+
+        thanhvienService.save(thanhvienService.modelToDTO(tv));
+
+        //sau khi đổi mật khẩu xong, xóa id thành viên và trạng thái xác thực trong session
+        session.removeAttribute("isVerified");
+        session.removeAttribute("newPassTv");
+
+        response.put("status", "success");
+        response.put("message", "Đổi mật khẩu thành công");
+        return response;
+    }
+
+    public String generateVerificationCode(){
+        Random random = new Random();
+        String generatedCode;
+
+        // Lấy tất cả các mã xác thực trong db
+        Set<String> existingCodes = verificationCodeService.getAll().stream()
+                .map(VerificationCode::getCode)
+                .collect(Collectors.toSet());
+
+        do {
+            int randomNum = 1000 + random.nextInt(9000); // Tạo 1 mã random từ 1000 đến 9999
+            generatedCode = String.valueOf(randomNum);
+        } while (existingCodes.contains(generatedCode));
+
+        return generatedCode;
     }
 
     @ExceptionHandler(MethodArgumentTypeMismatchException.class)

@@ -1,0 +1,123 @@
+<!doctype html>
+<html lang="en" xmlns:th="http://www.thymeleaf.org">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport"
+          content="width=device-width, user-scalable=no, initial-scale=1.0, maximum-scale=1.0, minimum-scale=1.0">
+    <meta http-equiv="X-UA-Compatible" content="ie=edge">
+    <link rel="stylesheet" href="https://stackpath.bootstrapcdn.com/bootstrap/4.3.1/css/bootstrap.min.css">
+    <script src="https://code.jquery.com/jquery-3.3.1.slim.min.js"></script>
+    <script src="https://code.jquery.com/jquery-3.6.0.min.js"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/popper.js/1.14.7/umd/popper.min.js"></script>
+    <script src="https://stackpath.bootstrapcdn.com/bootstrap/4.3.1/js/bootstrap.min.js"></script>
+    <title>Document</title>
+</head>
+<body>
+    <h2>Tạo vi phạm mới</h2>
+
+    <form action="/xuly/add"
+          method="post"
+          id="add-xuly-form"
+    >
+
+        <input type="text"
+               placeholder="Mã thành viên"
+               name="tvId"
+        ><br>
+        <div id="tvMessage">
+
+        </div>
+        <br>
+
+        <input type="text"
+               placeholder="Lý do"
+               name="lydo"
+        ><br>
+        <div id="lydoMessage">
+
+        </div>
+
+        Chọn hình thức xử lý:
+        <select name="htxlId"
+        >
+            <option th:each="htxl : ${dsHinhThuc}"
+                    th:value="${htxl.id}"
+                    th:text="${htxl.hinhthuc}"
+            >
+
+            </option>
+        </select><br>
+
+        <input type="number"
+               placeholder="Tiền phạt"
+                name="tienphat"
+        ><br>
+        <div id="tienphatMessage">
+
+        </div>
+
+        <input type="submit" value="Xác nhận">
+    </form>
+
+    <script>
+        $(document).ready(function (){
+            $('#add-xuly-form').submit(function (e){
+                e.preventDefault();
+                var tvId = $('input[name="tvId"]').val();
+                var lydo = $('input[name="lydo"]').val();
+                var htxlId = $('select[name="htxlId"]').val();
+                var tienphat = $('input[name="tienphat"]').val();
+
+                $.ajax({
+                    url: '/xuly/add',
+                    type: 'POST',
+                    data: {
+                        tvId: tvId,
+                        lydo: lydo,
+                        htxlId: htxlId,
+                        tienphat: tienphat
+                    },
+                    success: function (data){
+                        console.log(data);
+                        // $('#tvMessage').html(data);
+                        if(data.tvResponse.status === 'error'){
+                            $('#tvMessage').html(data.tvResponse.message);
+                        }
+                        else{
+                            $('#tvMessage').html(data.tvResponse.info);
+                        }
+
+                        if(data.lydoResponse.status === 'error'){
+                            $('#lydoMessage').html(data.lydoResponse.message);
+                        }
+
+                        if(data.tienphatResponse.status === 'error'){
+                            $('#tienphatMessage').html(data.tienphatResponse.message);
+                        }
+
+                        if(data.tvResponse.status === 'success' && data.lydoResponse.status === 'success' && data.tienphatResponse.status === 'success'){
+                            alert('Thêm vi phạm thành công cho: ' + data.tvResponse.info + ' với lý do: ' + lydo + ' và tiền phạt: ' + tienphat);
+                            $('#tvMessage').html('');
+                            $('#lydoMessage').html('');
+                            $('#tienphatMessage').html('');
+                        }
+                        else{
+                            if(data.lydoResponse.status !== 'error'){
+                                $('#lydoMessage').html('');
+                            }
+                            if(data.tienphatResponse.status !== 'error'){
+                                $('#tienphatMessage').html('');
+                            }
+                            alert('Vui lòng điền đầy đủ thông tin cần thiết');
+                        }
+                    },
+                    error: function (error){
+                        console.log(error);
+                    }
+                });
+            });
+        });
+    </script>
+
+</body>
+</html>

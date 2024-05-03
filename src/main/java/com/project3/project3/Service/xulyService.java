@@ -8,6 +8,14 @@ public interface xulyService {
 
     List<xuly> getAll();
 
+    List<xuly> getXulyFalse();
+
+    List<xuly> getXulyTrue();
+
+    List<xuly> getByThanhvienId(Long id);
+
+    List<xuly> getXulyFalseByThanhvien(Long id);
+
     xuly getById(int id);
 
     void saveOrUpdate(xuly xuly);

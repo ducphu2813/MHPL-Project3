@@ -5,13 +5,53 @@
     <meta name="viewport"
           content="width=device-width, user-scalable=no, initial-scale=1.0, maximum-scale=1.0, minimum-scale=1.0">
     <meta http-equiv="X-UA-Compatible" content="ie=edge">
+    <link rel="stylesheet" href="https://stackpath.bootstrapcdn.com/bootstrap/4.3.1/css/bootstrap.min.css">
+    <script src="https://code.jquery.com/jquery-3.3.1.slim.min.js"></script>
+    <script src="https://code.jquery.com/jquery-3.6.0.min.js"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/popper.js/1.14.7/umd/popper.min.js"></script>
+    <script src="https://stackpath.bootstrapcdn.com/bootstrap/4.3.1/js/bootstrap.min.js"></script>
     <title>Document</title>
 </head>
 <body>
     Nhập mã xác thực đã được gửi đến email của bạn
-    <form action="/thanhvien/verify" method="post">
+    <form th:action="@{/thanhvien/verify}"
+          method="post"
+          id="verifyForm"
+    >
         <input type="text" name="code" placeholder="Nhập mã xác thực">
         <input type="submit" value="Xác thực">
     </form>
+
+    <span id="message"></span>
+
+    <script>
+        $(document).ready(function () {
+            $('#verifyForm').submit(function (e) {
+                e.preventDefault();
+                var code = $('input[name="code"]').val();
+                var url = $(this).attr('action');
+                $.ajax({
+                    url: url,
+                    type: 'POST',
+                    data: {
+                        code: code
+                    },
+                    success: function (data) {
+                        console.log(data);
+                        if(data.status === 'failed') {
+                            $('#message').html('<h4 style="color: red">' + data.message + '</h4>');
+                        }
+                        else if(data.status === 'success'){
+                            $('#message').html('<h4 style="color: chartreuse">' + data.message + '</h4>');
+                            window.location.href = '/thanhvien/changeForgotPassword';
+                        }
+                    },
+                    error: function (data) {
+                        console.log(data);
+                    }
+                });
+            });
+        });
+    </script>
 </body>
 </html>

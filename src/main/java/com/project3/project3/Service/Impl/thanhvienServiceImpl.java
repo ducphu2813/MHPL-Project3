@@ -2,15 +2,14 @@ package com.project3.project3.Service.Impl;
 
 import com.project3.project3.DTO.ThanhVienDTO;
 import com.project3.project3.Model.thanhvien;
-import com.project3.project3.Repository.khoaRepository;
-import com.project3.project3.Repository.nganhRepository;
-import com.project3.project3.Repository.thanhvienRepository;
-import com.project3.project3.Repository.thanhvienSequenceRepository;
+import com.project3.project3.Model.xuly;
+import com.project3.project3.Repository.*;
 import com.project3.project3.Service.thanhvienService;
 import org.modelmapper.ModelMapper;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
+import java.time.LocalDateTime;
 import java.util.List;
 
 @Service
@@ -22,17 +21,21 @@ public class thanhvienServiceImpl implements thanhvienService {
     khoaRepository khoaRepository;
     ModelMapper modelMapper;
 
+    xulyRepository xulyRepository;
+
 
     public thanhvienServiceImpl(thanhvienRepository thanhvienRepository,
                                 thanhvienSequenceRepository thanhvienSequenceRepository,
                                 nganhRepository nganhRepository,
                                 khoaRepository khoaRepository,
-                                ModelMapper modelMapper) {
+                                ModelMapper modelMapper,
+                                xulyRepository xulyRepository) {
         this.thanhvienRepository = thanhvienRepository;
         this.thanhvienSequenceRepository = thanhvienSequenceRepository;
         this.nganhRepository = nganhRepository;
         this.khoaRepository = khoaRepository;
         this.modelMapper = modelMapper;
+        this.xulyRepository = xulyRepository;
     }
 
     @Override
@@ -120,6 +123,15 @@ public class thanhvienServiceImpl implements thanhvienService {
             return null;
         }
 
+    }
+
+    //kiểm tra xem thành viên có bị cấm mượn thiết bị không, nếu tìm thấy xử lý nào có trạng thái false thì trả về true
+    @Override
+    public boolean isBanned(Long id) {
+
+        List<xuly> dsXL = xulyRepository.findByThanhvienIdAndTrangthaiFalse(id);
+
+        return !dsXL.isEmpty();
     }
 
     private String parseDozen(int num) {

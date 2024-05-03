@@ -11,6 +11,8 @@ public interface thietbiService {
 
     List<thietbi> findAll();
 
+    List<thietbi> findAvailable();
+
     List<thietbi> findByTenContaining(String name);
 
     List<thietbi> findNotBorrowedByName(String name);

@@ -3,6 +3,8 @@ package com.project3.project3.Controller;
 import com.project3.project3.DTO.ThietBiDTO;
 import com.project3.project3.Model.loai_thietbi;
 import com.project3.project3.Model.thietbi;
+import com.project3.project3.Model.thongtin_sudung;
+import com.project3.project3.Service.thongtinSuDungService;
 import jakarta.servlet.http.HttpSession;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
@@ -16,19 +18,28 @@ import java.util.List;
 @RequestMapping("/thietbi")
 public class thietbiController {
 
-    thietbiService thietbiService;
-    loaiThietBiService loaiThietBiService;
+    private final thietbiService thietbiService;
+    private final loaiThietBiService loaiThietBiService;
+    private final thongtinSuDungService thongtinSuDungService;
 
-    public thietbiController(thietbiService thietbiService, loaiThietBiService loaiThietBiService) {
+    public thietbiController(thietbiService thietbiService,
+                             loaiThietBiService loaiThietBiService,
+                             thongtinSuDungService thongtinSuDungService) {
         this.thietbiService = thietbiService;
         this.loaiThietBiService = loaiThietBiService;
+        this.thongtinSuDungService = thongtinSuDungService;
     }
 
     @GetMapping("/all")
     public String getAll(Model model){
+
         List<thietbi> dsThietBi = thietbiService.findAll();
+        List<thietbi> dsRanh = thietbiService.findAvailable();
+        List<thongtin_sudung> dsDangMuon = thongtinSuDungService.findBorrowing();
 
         model.addAttribute("dsThietBi", dsThietBi);
+        model.addAttribute("dsRanh", dsRanh);
+        model.addAttribute("dsDangMuon", dsDangMuon);
 
         return "layout/layout";
     }
