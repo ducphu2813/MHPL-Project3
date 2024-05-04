@@ -84,4 +84,30 @@ public class thietbiServiceImpl implements thietbiService {
     public void deleteById(Integer id) {
         thietbiRepository.deleteById(id);
     }
+
+    @Override
+    public List<thietbi> findByLoaiThietBi(Integer id) {
+        return thietbiRepository.findByLoaiThietBi(id);
+    }
+
+    @Override
+    @Transactional
+    public void deleteByLoaiThietBi(Integer id) {
+        thietbiRepository.deleteByLoaiThietBi(id);
+    }
+
+    @Override
+    @Transactional
+    public void saveList(List<ThietBiDTO> tbDtos) {
+
+        for(ThietBiDTO tbDto : tbDtos){
+            thietbi thietbi = new thietbi();
+            thietbi.setTen(tbDto.getTen());
+            thietbi.setMota(tbDto.getMota());
+            thietbi.setLoai_thietbi(loaiThietBiRepository.findByName(tbDto.getTenLoaiTb()));
+
+            thietbiRepository.save(thietbi);
+        }
+
+    }
 }

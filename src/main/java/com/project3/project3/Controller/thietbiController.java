@@ -4,6 +4,7 @@ import com.project3.project3.DTO.ThietBiDTO;
 import com.project3.project3.Model.loai_thietbi;
 import com.project3.project3.Model.thietbi;
 import com.project3.project3.Model.thongtin_sudung;
+import com.project3.project3.Service.ExcelService;
 import com.project3.project3.Service.thongtinSuDungService;
 import jakarta.servlet.http.HttpSession;
 import org.springframework.stereotype.Controller;
@@ -11,8 +12,13 @@ import org.springframework.ui.Model;
 import org.springframework.web.bind.annotation.*;
 import com.project3.project3.Service.thietbiService;
 import com.project3.project3.Service.loaiThietBiService;
+import org.springframework.web.multipart.MultipartFile;
 
+import java.io.InputStream;
+import java.util.HashMap;
 import java.util.List;
+import java.util.Map;
+import java.util.stream.Collectors;
 
 @Controller
 @RequestMapping("/thietbi")
@@ -21,13 +27,16 @@ public class thietbiController {
     private final thietbiService thietbiService;
     private final loaiThietBiService loaiThietBiService;
     private final thongtinSuDungService thongtinSuDungService;
+    private final ExcelService excelService;
 
     public thietbiController(thietbiService thietbiService,
                              loaiThietBiService loaiThietBiService,
-                             thongtinSuDungService thongtinSuDungService) {
+                             thongtinSuDungService thongtinSuDungService,
+                             ExcelService excelService) {
         this.thietbiService = thietbiService;
         this.loaiThietBiService = loaiThietBiService;
         this.thongtinSuDungService = thongtinSuDungService;
+        this.excelService = excelService;
     }
 
     @GetMapping("/all")
@@ -109,5 +118,61 @@ public class thietbiController {
         return "thietbi/delete-byCondition";
     }
 
+    @PostMapping("/deleteByCondition")
+    @ResponseBody
+    public Map<String, String> deleteByCondition(@RequestParam("loaiThietBiId") Integer loaiThietBiId){
+
+        Map<String, String> response = new HashMap<>();
+
+        List<thietbi> dsTheoLoai = thietbiService.findByLoaiThietBi(loaiThietBiId);
+        loai_thietbi loaiThietBi = loaiThietBiService.findById(loaiThietBiId);
+        if(dsTheoLoai.isEmpty()){
+            response.put("message", "Không còn thiết bị nào thuộc loại thiết bị: " + loaiThietBi.getTen() + "!");
+            response.put("status", "fail");
+            return response;
+        }
+
+        //cần xóa những thông tin sử dụng của thiết bị
+        for(thietbi tb : dsTheoLoai){
+            thongtinSuDungService.deleteByThietbiId(tb.getId());
+        }
+        thietbiService.deleteByLoaiThietBi(loaiThietBiId);
+
+
+        response.put("message", "Đã xóa tất cả thiết bị thuộc loại: " + loaiThietBi.getTen() + "!");
+        response.put("status", "success");
+
+//        thietbiService.deleteByLoaiThietBiId(loaiThietBiId);
+
+        return response;
+    }
+
+    @GetMapping("/excel")
+    public String excel(){
+
+        return "thietbi/excel";
+    }
+
+    @PostMapping("/excel")
+    @ResponseBody
+    public Map<String, String> excel(@RequestParam("file") MultipartFile file){
+
+        Map<String, String> response = new HashMap<>();
+
+        try{
+            InputStream in = file.getInputStream();
+            List<ThietBiDTO> tbDtos = excelService.parseExcelFileThietBi(in);
+            thietbiService.saveList(tbDtos);
+            response.put("message", "Đã thêm thành công " + tbDtos.size() + " thiết bị!");
+            response.put("status", "success");
+        }
+        catch (Exception e){
+            response.put("message", "Lỗi khi đọc file!");
+            response.put("status", "fail");
+            return response;
+        }
+
+        return response;
+    }
 
 }

@@ -4,6 +4,7 @@ import com.project3.project3.Model.VerificationCode;
 import com.project3.project3.Repository.VerificationCodeRepository;
 import com.project3.project3.Service.VerificationCodeService;
 import org.springframework.stereotype.Service;
+import org.springframework.transaction.annotation.Transactional;
 
 import java.util.List;
 
@@ -27,7 +28,14 @@ public class VerificationCodeServiceImpl implements VerificationCodeService {
     }
 
     @Override
+    @Transactional
     public void save(VerificationCode verificationCode) {
         verificationCodeRepository.save(verificationCode);
+    }
+
+    @Override
+    @Transactional
+    public void deleteByThanhvienId(Long id) {
+        verificationCodeRepository.deleteByThanhvienId(id);
     }
 }

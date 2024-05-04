@@ -36,4 +36,6 @@ public interface thongtinSuDungService {
     void nullifyThanhvienInThongtinSudung(Long id);
 
     void deleteByThanhvienId(Long tvId);
+
+    void deleteByThietbiId(Integer tbId);
 }

@@ -11,6 +11,9 @@ public interface thanhvienSequenceRepository extends JpaRepository<thanhvien_seq
     @Query("SELECT s.num FROM thanhvien_sequence s WHERE s.name = 'index'")
     Long getIndex();
 
+    @Query("SELECT s FROM thanhvien_sequence s WHERE s.name = 'index'")
+    thanhvien_sequence findByName(String name);
+
     @Transactional
     @Modifying
     @Query("UPDATE thanhvien_sequence s SET s.num = s.num + 1 WHERE s.name = 'index'")

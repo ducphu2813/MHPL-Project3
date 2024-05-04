@@ -2,6 +2,7 @@ package com.project3.project3.Repository;
 
 import com.project3.project3.Model.thietbi;
 import org.springframework.data.jpa.repository.JpaRepository;
+import org.springframework.data.jpa.repository.Modifying;
 import org.springframework.data.jpa.repository.Query;
 import org.springframework.data.repository.query.Param;
 
@@ -42,6 +43,12 @@ public interface thietbiRepository extends JpaRepository<thietbi, Integer> {
             "tb.id IN (SELECT tsd.thietbi.id FROM thongtin_sudung tsd WHERE tsd.ngaytra IS NULL AND tsd.ngaymuon IS NOT NULL)")
     List<thietbi> findBorrowedByName(@Param("name") String name);
 
+    //tìm thiết bị theo id loại thiết bị
+    @Query("SELECT tb FROM thietbi tb WHERE tb.loai_thietbi.id = :id")
+    List<thietbi> findByLoaiThietBi(@Param("id") Integer id);
 
-
+    //xóa theo id loại thiết bị
+    @Query("DELETE FROM thietbi tb WHERE tb.loai_thietbi.id = :id")
+    @Modifying
+    void deleteByLoaiThietBi(@Param("id") Integer id);
 }

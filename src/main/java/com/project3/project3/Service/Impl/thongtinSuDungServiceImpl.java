@@ -124,4 +124,10 @@ public class thongtinSuDungServiceImpl implements thongtinSuDungService {
     public void deleteByThanhvienId(Long tvId) {
         thongtinSuDungRepository.deleteByThanhvienId(tvId);
     }
+
+    @Override
+    @Transactional
+    public void deleteByThietbiId(Integer tbId) {
+        thongtinSuDungRepository.deleteByThietbiId(tbId);
+    }
 }

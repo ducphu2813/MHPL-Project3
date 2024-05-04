@@ -55,4 +55,9 @@ public interface thongtinSuDungRepository extends JpaRepository<thongtin_sudung,
     @Query("DELETE FROM thongtin_sudung tsd WHERE tsd.thanhvien.id = :tvId")
     void deleteByThanhvienId(@Param("tvId") Long tvId);
 
+    //xóa thông tin sử dụng theo id thiết bị
+    @Modifying
+    @Query("DELETE FROM thongtin_sudung tsd WHERE tsd.thietbi.id = :tbId")
+    void deleteByThietbiId(@Param("tbId") Integer tbId);
+
 }

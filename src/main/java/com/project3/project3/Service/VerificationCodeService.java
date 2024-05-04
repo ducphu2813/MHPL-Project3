@@ -10,4 +10,6 @@ public interface VerificationCodeService {
     VerificationCode findByCodeAndThanhvienId(String code, Long thanhvienId);
 
     void save(VerificationCode verificationCode);
+
+    void deleteByThanhvienId(Long id);
 }

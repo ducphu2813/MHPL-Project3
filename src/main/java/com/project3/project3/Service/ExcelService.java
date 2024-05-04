@@ -2,6 +2,7 @@ package com.project3.project3.Service;
 
 import com.project3.project3.DTO.ThanhVienDTO;
 
+import com.project3.project3.DTO.ThietBiDTO;
 import org.apache.poi.ss.usermodel.*;
 import org.apache.poi.xssf.usermodel.XSSFWorkbook;
 import org.springframework.stereotype.Service;
@@ -122,5 +123,75 @@ public class ExcelService {
         }
 
         return thanhVienDTOs;
+    }
+
+    public List<ThietBiDTO> parseExcelFileThietBi(InputStream in){
+
+        DecimalFormat df = new DecimalFormat("#");
+        List<ThietBiDTO> ThietBiDTOs = new ArrayList<>();
+
+        try {
+            //Tạo một workbook từ file excel truyền vào qua InputStream
+            Workbook workbook = new XSSFWorkbook(in);
+
+            // Lấy ra sheet đầu tiên từ workbook
+            Sheet sheet = workbook.getSheetAt(0);
+
+            // Lấy ra tất cả các dòng của sheet
+            Iterator<Row> rowIterator = sheet.iterator();
+
+            rowIterator.next(); // bỏ qua dòng đầu tiên
+
+            while (rowIterator.hasNext()) {
+                Row row = rowIterator.next();
+
+                //Lặp qua từng cột của dòng
+                Iterator<Cell> cellIterator = row.cellIterator();
+
+                ThietBiDTO tbDTO = new ThietBiDTO();
+                while (cellIterator.hasNext()) {
+                    Cell cell = cellIterator.next();
+
+                    // check kiểu dữ liệu và thêm dữ liệu
+                    switch (cell.getColumnIndex()) {
+                        case 0:
+                            switch (cell.getCellType()) {
+                                case STRING:
+                                    tbDTO.setTen(cell.getStringCellValue());
+                                    break;
+                                case NUMERIC:
+                                    tbDTO.setTen(String.valueOf(cell.getNumericCellValue()));
+                                    break;
+                            }
+                            break;
+                        case 1:
+                            switch (cell.getCellType()) {
+                                case STRING:
+                                    tbDTO.setMota(cell.getStringCellValue());
+                                    break;
+                                case NUMERIC:
+                                    tbDTO.setMota(String.valueOf(cell.getNumericCellValue()));
+                                    break;
+                            }
+                            break;
+                        case 2:
+                            switch (cell.getCellType()) {
+                                case STRING:
+                                    tbDTO.setTenLoaiTb(cell.getStringCellValue());
+                                    break;
+                                case NUMERIC:
+                                    tbDTO.setTenLoaiTb(String.valueOf(cell.getNumericCellValue()));
+                                    break;
+                            }
+                            break;
+                    }
+                }
+                ThietBiDTOs.add(tbDTO);
+            }
+        } catch (Exception e) {
+            e.printStackTrace();
+        }
+
+        return ThietBiDTOs;
     }
 }

@@ -24,4 +24,10 @@ public interface thietbiService {
     void save(ThietBiDTO tbDto);
 
     void deleteById(Integer id);
+
+    List<thietbi> findByLoaiThietBi(Integer id);
+
+    void deleteByLoaiThietBi(Integer id);
+
+    void saveList(List<ThietBiDTO> tbDtos);
 }

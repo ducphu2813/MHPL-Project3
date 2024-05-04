@@ -1,12 +1,10 @@
 package com.project3.project3.Service.Impl;
 
 import com.project3.project3.DTO.ThanhVienDTO;
-import com.project3.project3.Model.khoa;
-import com.project3.project3.Model.nganh;
-import com.project3.project3.Model.thanhvien;
-import com.project3.project3.Model.xuly;
+import com.project3.project3.Model.*;
 import com.project3.project3.Repository.*;
 import com.project3.project3.Service.thanhvienService;
+import jakarta.annotation.PostConstruct;
 import org.modelmapper.ModelMapper;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
@@ -22,7 +20,6 @@ public class thanhvienServiceImpl implements thanhvienService {
     nganhRepository nganhRepository;
     khoaRepository khoaRepository;
     ModelMapper modelMapper;
-
     xulyRepository xulyRepository;
 
 
@@ -38,6 +35,23 @@ public class thanhvienServiceImpl implements thanhvienService {
         this.khoaRepository = khoaRepository;
         this.modelMapper = modelMapper;
         this.xulyRepository = xulyRepository;
+    }
+
+    @PostConstruct
+    public void init() {
+        checkAndCreateIndex();
+    }
+
+    @Override
+    @Transactional
+    public void checkAndCreateIndex() {
+        thanhvien_sequence sequence = thanhvienSequenceRepository.findByName("index");
+        if (sequence == null) {
+            sequence = new thanhvien_sequence();
+            sequence.setName("index");
+            sequence.setNum(1L);
+            thanhvienSequenceRepository.save(sequence);
+        }
     }
 
     @Override

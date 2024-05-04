@@ -5,4 +5,6 @@ public interface thanhvienSequenceService {
     Long getIndex();
 
     void updateIndex();
+
+    void checkAndCreateRecord();
 }

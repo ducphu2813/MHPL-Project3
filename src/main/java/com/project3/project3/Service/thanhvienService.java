@@ -33,4 +33,6 @@ public interface thanhvienService {
     thanhvien checkLogin(Long id, String password);
 
     boolean isBanned(Long id);
+
+    void checkAndCreateIndex();
 }

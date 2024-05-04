@@ -162,6 +162,7 @@ public class thanhvienController {
                 thongtinVaoSerivce.deleteThongtinVaoByThanhvienId(tv.getId());
                 thongtinSuDungService.deleteByThanhvienId(tv.getId());
                 xulyService.deleteByThanhvien(tv.getId());
+                verificationCodeService.deleteByThanhvienId(tv.getId());
             }
 
             thanhvienService.deleteByYear(year);
@@ -684,16 +685,16 @@ public class thanhvienController {
         try {
             InputStream in = file.getInputStream();
             List<ThanhVienDTO> thanhVienDTOs = excelService.parseExcelFile(in);
-            for(ThanhVienDTO tv : thanhVienDTOs){
-                System.out.println(tv.getTen());
-                System.out.println(tv.getTenKhoa());
-                System.out.println(tv.getTenNganh());
-                System.out.println(tv.getSodienthoai());
-                System.out.println(tv.getEmail());
-                System.out.println(tv.getPassword());
-                System.out.println(tv.getCreated_date());
-                System.out.println("====================================");
-            }
+//            for(ThanhVienDTO tv : thanhVienDTOs){
+//                System.out.println(tv.getTen());
+//                System.out.println(tv.getTenKhoa());
+//                System.out.println(tv.getTenNganh());
+//                System.out.println(tv.getSodienthoai());
+//                System.out.println(tv.getEmail());
+//                System.out.println(tv.getPassword());
+//                System.out.println(tv.getCreated_date());
+//                System.out.println("====================================");
+//            }
 
 
             response.put("message", "Thêm thành công");
@@ -705,7 +706,7 @@ public class thanhvienController {
                 response.put("status", "failed");
             }
             else{
-                response.put("message", "Thêm thành công");
+                response.put("message", "Thêm thành công " + thanhVienDTOs.size() + " thành viên!");
                 response.put("status", "success");
             }
         } catch (Exception e) {
