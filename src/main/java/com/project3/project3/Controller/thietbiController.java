@@ -103,5 +103,11 @@ public class thietbiController {
         return "redirect:/thietbi/all";
     }
 
+    @GetMapping("/deleteByCondition")
+    public String deleteByConditon(){
+
+        return "thietbi/delete-byCondition";
+    }
+
 
 }

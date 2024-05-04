@@ -10,7 +10,10 @@ import org.springframework.ui.Model;
 import org.springframework.validation.BindingResult;
 import org.springframework.web.bind.annotation.*;
 import org.springframework.web.method.annotation.MethodArgumentTypeMismatchException;
+import org.springframework.web.multipart.MultipartFile;
+import org.springframework.web.servlet.mvc.support.RedirectAttributes;
 
+import java.io.InputStream;
 import java.time.LocalDateTime;
 import java.util.*;
 import java.util.stream.Collectors;
@@ -27,6 +30,8 @@ public class thanhvienController {
     private final xulyService xulyService;
     private final EmailService emailService;
     private final VerificationCodeService verificationCodeService;
+    private final thongtinVaoSerivce thongtinVaoSerivce;
+    private final ExcelService excelService;
 
     public thanhvienController(thanhvienService thanhvienService,
                                khoaService khoaService,
@@ -35,7 +40,9 @@ public class thanhvienController {
                                thongtinSuDungService thongtinSuDungService,
                                EmailService emailService,
                                VerificationCodeService verificationCodeService,
-                               xulyService xulyService) {
+                               xulyService xulyService,
+                               thongtinVaoSerivce thongtinVaoSerivce,
+                               ExcelService excelService) {
         this.thanhvienService = thanhvienService;
         this.khoaService = khoaService;
         this.nganhService = nganhService;
@@ -44,6 +51,8 @@ public class thanhvienController {
         this.emailService = emailService;
         this.verificationCodeService = verificationCodeService;
         this.xulyService = xulyService;
+        this.thongtinVaoSerivce = thongtinVaoSerivce;
+        this.excelService = excelService;
     }
 
     @GetMapping("/all")
@@ -79,6 +88,8 @@ public class thanhvienController {
     @GetMapping("/add")
     public String addForm(Model model){
 
+        LocalDateTime now = LocalDateTime.now();
+
         model.addAttribute("tv", new ThanhVienDTO(
                 null,
                 null,
@@ -88,7 +99,8 @@ public class thanhvienController {
                 null,
                 null,
                 null,
-                null));
+                null,
+                now));
 
         return "thanhvien/formThanhVien";
     }
@@ -122,6 +134,41 @@ public class thanhvienController {
         thanhvienService.deleteById(tvId);
 
         return "redirect:/thanhvien/all";
+    }
+
+    @GetMapping("/deleteByCondition")
+    public String deleteByCondition(){
+
+        return "thanhvien/delete-byCondition";
+    }
+
+    @PostMapping("/deleteByCondition")
+    @ResponseBody
+    public Map<String, String> deleteByCondition(@RequestParam("year") String yearInput){
+
+        Map<String, String> response = new HashMap<>();
+
+        int year = Integer.parseInt(yearInput);
+        List<thanhvien> dsTvByYear = thanhvienService.findByYear(year);
+
+        if(dsTvByYear.isEmpty()){
+            response.put("message", "Không có thành viên nào được tạo vào năm "+year);
+            response.put("status", "failed");
+            return response;
+        }
+        else{
+            //xóa luôn những thứ liên quan đến thành viên
+            for(thanhvien tv : dsTvByYear){
+                thongtinVaoSerivce.deleteThongtinVaoByThanhvienId(tv.getId());
+                thongtinSuDungService.deleteByThanhvienId(tv.getId());
+                xulyService.deleteByThanhvien(tv.getId());
+            }
+
+            thanhvienService.deleteByYear(year);
+            response.put("message", "Xóa thành công tất cả thành viên được tạo vào năm "+year);
+            response.put("status", "success");
+            return response;
+        }
     }
 
     //hiện trang home, thông tin cá nhân và trạng thái vi phạm
@@ -320,6 +367,8 @@ public class thanhvienController {
             return "redirect:/thanhvien/home";
         }
 
+
+
         model.addAttribute("tv", new ThanhVienDTO(
                 null,
                 null,
@@ -329,7 +378,8 @@ public class thanhvienController {
                 null,
                 null,
                 null,
-                null));
+                null,
+                LocalDateTime.now()));
 
         return "thanhvien/form-dangky";
     }
@@ -345,11 +395,11 @@ public class thanhvienController {
             return "thanhvien/form-dangky";
         }
 
-        if(thanhvienService.save(tvDTO) != null){
-            //lưu thông tin user vào session
-            session.setAttribute("thanhvien", tvDTO);
+        thanhvien tv = thanhvienService.save(tvDTO);
+        ThanhVienDTO newTvDTO = thanhvienService.modelToDTO(tv);
 
-        }
+        //lưu thông tin user vào session
+        session.setAttribute("thanhvien", newTvDTO);
 
         return "redirect:/thanhvien/home";
     }
@@ -365,6 +415,7 @@ public class thanhvienController {
         }
 
         model.addAttribute("tv", new ThanhVienDTO(
+                null,
                 null,
                 null,
                 null,
@@ -428,19 +479,34 @@ public class thanhvienController {
     @PostMapping("/check")
     public String check(@RequestParam("tvId") String tvId, Model model){
 
-        Long tvIdLong = Long.valueOf(tvId);
-
         thanhvien tv = new thanhvien();
 
         try{
+            Long tvIdLong = Long.valueOf(tvId);
             tv = thanhvienService.findById(tvIdLong);
 
-            model.addAttribute("check", 2);
             model.addAttribute("tv", tv);
             model.addAttribute("tvId", tvId);
-            model.addAttribute("message", "this is a message");
+            List<xuly> dsChuaXuly = xulyService.getXulyFalseByThanhvien(tvIdLong);
+
+            //check thành viên có vi phạm nào chưa xử lý không
+            if(!dsChuaXuly.isEmpty()){
+                model.addAttribute("dsXuly", dsChuaXuly);
+                model.addAttribute("check", 4);
+            }
+            else{
+                //nếu không thì thêm thông tin vào
+                model.addAttribute("check", 2);
+                thongtin_vao thongtinVao = new thongtin_vao();
+                thongtinVao.setThanhvien(tv);
+                thongtinVaoSerivce.save(thongtinVao);
+            }
         }
-        catch (Exception e){
+        catch (NumberFormatException e){
+            model.addAttribute("check", 3);
+            model.addAttribute("tvId", tvId);
+        }
+        catch (NoSuchElementException e){
             model.addAttribute("check", 1);
             model.addAttribute("tvId", tvId);
         }
@@ -600,6 +666,53 @@ public class thanhvienController {
 
         response.put("status", "success");
         response.put("message", "Đổi mật khẩu thành công");
+        return response;
+    }
+
+    @GetMapping("/excel")
+    public String excel(){
+
+        return "thanhvien/excel";
+    }
+
+    @PostMapping("/excel")
+    @ResponseBody
+    public Map<String, String> uploadExcel(@RequestParam("file") MultipartFile file) {
+
+        Map<String, String> response = new HashMap<>();
+
+        try {
+            InputStream in = file.getInputStream();
+            List<ThanhVienDTO> thanhVienDTOs = excelService.parseExcelFile(in);
+            for(ThanhVienDTO tv : thanhVienDTOs){
+                System.out.println(tv.getTen());
+                System.out.println(tv.getTenKhoa());
+                System.out.println(tv.getTenNganh());
+                System.out.println(tv.getSodienthoai());
+                System.out.println(tv.getEmail());
+                System.out.println(tv.getPassword());
+                System.out.println(tv.getCreated_date());
+                System.out.println("====================================");
+            }
+
+
+            response.put("message", "Thêm thành công");
+            response.put("status", "success");
+            String addStatus = thanhvienService.saveList(thanhVienDTOs);
+
+            if(addStatus.equals("error")){
+                response.put("message", "Thêm thất bại, kiểm tra lại file excel của bạn");
+                response.put("status", "failed");
+            }
+            else{
+                response.put("message", "Thêm thành công");
+                response.put("status", "success");
+            }
+        } catch (Exception e) {
+            response.put("message", "Lỗi khi đọc file excel, hãy kiểm tra lại file excel của bạn");
+            response.put("status", "failed");
+            e.printStackTrace();
+        }
         return response;
     }
 

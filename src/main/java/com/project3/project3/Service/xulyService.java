@@ -21,4 +21,8 @@ public interface xulyService {
     void saveOrUpdate(xuly xuly);
 
     void delete(int id);
+
+    void nullifyThanhvienInXuly(Long id);
+
+    void deleteByThanhvien(Long id);
 }

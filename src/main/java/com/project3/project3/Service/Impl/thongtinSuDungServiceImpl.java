@@ -4,6 +4,7 @@ import com.project3.project3.Model.thongtin_sudung;
 import com.project3.project3.Repository.thongtinSuDungRepository;
 import com.project3.project3.Service.thongtinSuDungService;
 import org.springframework.stereotype.Service;
+import org.springframework.transaction.annotation.Transactional;
 
 import java.time.LocalDateTime;
 import java.util.List;
@@ -28,6 +29,7 @@ public class thongtinSuDungServiceImpl implements thongtinSuDungService {
     }
 
     @Override
+    @Transactional
     public void save(thongtin_sudung thongtin_sudung) {
         thongtinSuDungRepository.save(thongtin_sudung);
     }
@@ -109,5 +111,17 @@ public class thongtinSuDungServiceImpl implements thongtinSuDungService {
     @Override
     public List<thongtin_sudung> findDatChoByThanhvienId(Long tvId) {
         return thongtinSuDungRepository.findDatChoByThanhvienId(tvId);
+    }
+
+    @Override
+    @Transactional
+    public void nullifyThanhvienInThongtinSudung(Long id) {
+        thongtinSuDungRepository.nullifyThanhvienInThongtinSudung(id);
+    }
+
+    @Override
+    @Transactional
+    public void deleteByThanhvienId(Long tvId) {
+        thongtinSuDungRepository.deleteByThanhvienId(tvId);
     }
 }

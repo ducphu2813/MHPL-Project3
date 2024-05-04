@@ -4,6 +4,7 @@ import com.project3.project3.Model.xuly;
 import com.project3.project3.Service.xulyService;
 import com.project3.project3.Repository.xulyRepository;
 import org.springframework.stereotype.Service;
+import org.springframework.transaction.annotation.Transactional;
 
 import java.util.List;
 
@@ -49,12 +50,26 @@ public class xulyServiceImpl implements xulyService {
     }
 
     @Override
+    @Transactional
     public void saveOrUpdate(xuly xuly) {
         xulyRepository.save(xuly);
     }
 
     @Override
+    @Transactional
     public void delete(int id) {
         xulyRepository.deleteById(id);
+    }
+
+    @Override
+    @Transactional
+    public void nullifyThanhvienInXuly(Long id) {
+        xulyRepository.nullifyThanhvienInXuly(id);
+    }
+
+    @Override
+    @Transactional
+    public void deleteByThanhvien(Long id) {
+        xulyRepository.deleteByThanhvien(id);
     }
 }

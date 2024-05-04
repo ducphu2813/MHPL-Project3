@@ -8,7 +8,7 @@
     <title>Document</title>
 </head>
 <body>
-    <h1>Thêm thành viên</h1>
+    <h1>Sửa thông tin thành viên</h1>
     <form action="#"
           method="post"
           th:action="@{/thanhvien/save}"
@@ -55,17 +55,19 @@
         </div>
         <br>
 
-        <input type="password"
+        <input type="hidden"
                placeholder="Mật Khẩu"
                th:field="*{password}"
-        ><br>
-        <div>
-                <span th:if="${#fields.hasErrors('password')}"
-                      th:errors="*{password}"
-                      class="error"
-                ></span>
-        </div>
-        <br>
+               th:value="${tv.password}"
+        >
+<!--        <br>-->
+<!--        <div>-->
+<!--                <span th:if="${#fields.hasErrors('password')}"-->
+<!--                      th:errors="*{password}"-->
+<!--                      class="error"-->
+<!--                ></span>-->
+<!--        </div>-->
+<!--        <br>-->
 
         <button type="submit">Xác nhận</button>
     </form>

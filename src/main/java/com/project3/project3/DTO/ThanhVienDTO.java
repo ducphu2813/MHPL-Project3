@@ -5,6 +5,8 @@ import jakarta.validation.constraints.Email;
 import jakarta.validation.constraints.NotBlank;
 import jakarta.validation.constraints.Size;
 
+import java.time.LocalDateTime;
+
 public class ThanhVienDTO {
     private Long id;
 
@@ -29,10 +31,12 @@ public class ThanhVienDTO {
     @NotBlank(message = "Mật khẩu nhập lại không được để trống")
     private String repassword;
 
+    private LocalDateTime created_date;
+
     public ThanhVienDTO() {
     }
 
-    public ThanhVienDTO(Long id, String ten, String sodienthoai, Integer khoaId, Integer nganhId, String tenKhoa, String tenNganh, String email, String password) {
+    public ThanhVienDTO(Long id, String ten, String sodienthoai, Integer khoaId, Integer nganhId, String tenKhoa, String tenNganh, String email, String password, LocalDateTime created_date) {
         this.id = id;
         this.ten = ten;
         this.sodienthoai = sodienthoai;
@@ -42,11 +46,20 @@ public class ThanhVienDTO {
         this.tenNganh = tenNganh;
         this.email = email;
         this.password = password;
+        this.created_date = created_date;
     }
 
 
 
     // getters and setters
+
+    public LocalDateTime getCreated_date() {
+        return created_date;
+    }
+
+    public void setCreated_date(LocalDateTime created_date) {
+        this.created_date = created_date;
+    }
 
     public Long getId() {
         return id;

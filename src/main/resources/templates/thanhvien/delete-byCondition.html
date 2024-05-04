@@ -1,0 +1,65 @@
+<!doctype html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport"
+          content="width=device-width, user-scalable=no, initial-scale=1.0, maximum-scale=1.0, minimum-scale=1.0">
+    <meta http-equiv="X-UA-Compatible" content="ie=edge">
+    <link rel="stylesheet" href="https://stackpath.bootstrapcdn.com/bootstrap/4.3.1/css/bootstrap.min.css">
+    <script src="https://code.jquery.com/jquery-3.3.1.slim.min.js"></script>
+    <script src="https://code.jquery.com/jquery-3.6.0.min.js"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/popper.js/1.14.7/umd/popper.min.js"></script>
+    <script src="https://stackpath.bootstrapcdn.com/bootstrap/4.3.1/js/bootstrap.min.js"></script>
+
+    <title>Xóa theo điều kiện</title>
+</head>
+<body>
+    <h1>Xóa nhiều thành viên theo điều kiện</h1>
+
+    <label for="yearSelect">Chọn năm để xóa</label>
+    <select id="yearSelect"></select><br>
+
+    <div id="message">
+
+    </div>
+
+    <input type="submit"
+           id="delete-btn"
+    >
+
+    <script>
+        var select = document.getElementById("yearSelect");
+        var currentYear = new Date().getFullYear();
+
+        for (var year = 2021; year <= currentYear; year++) {
+            var option = document.createElement("option");
+            option.text = year;
+            option.value = year;
+            select.appendChild(option);
+        }
+
+        $('#delete-btn').click(function() {
+            var year = $('#yearSelect').val();
+            $.ajax({
+                url: '/thanhvien/deleteByCondition',
+                type: 'POST',
+                data: {
+                    year: year
+                },
+                success: function (data) {
+                    alert(data.message);
+
+                    let html = '<div>';
+                    html += '<p>' + data.message + '</p>';
+                    html += '</div>';
+
+                    $('#message').html(data.message);
+                },
+                error: function (data) {
+                    console.log(data);
+                }
+            });
+        });
+    </script>
+</body>
+</html>

@@ -5,6 +5,7 @@ import jakarta.validation.constraints.Email;
 import jakarta.validation.constraints.NotBlank;
 import lombok.NoArgsConstructor;
 
+import java.time.LocalDateTime;
 import java.util.Set;
 
 @Entity
@@ -41,6 +42,9 @@ public class thanhvien {
     @NotBlank(message = "Mật khẩu không được để trống")
     private String password;
 
+    @Column(name = "created_date")
+    private LocalDateTime created_date = LocalDateTime.now();
+
     @OneToMany(fetch = FetchType.LAZY,
             mappedBy = "thanhvien",
             cascade = CascadeType.REMOVE)
@@ -60,6 +64,14 @@ public class thanhvien {
             mappedBy = "thanhvien",
             cascade = CascadeType.REMOVE)
     private Set<VerificationCode> verificationCodes;
+
+    public LocalDateTime getCreated_date() {
+        return created_date;
+    }
+
+    public void setCreated_date(LocalDateTime created_date) {
+        this.created_date = created_date;
+    }
 
     public Long getId() {
         return id;

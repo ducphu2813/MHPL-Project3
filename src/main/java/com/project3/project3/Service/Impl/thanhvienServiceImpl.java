@@ -1,6 +1,8 @@
 package com.project3.project3.Service.Impl;
 
 import com.project3.project3.DTO.ThanhVienDTO;
+import com.project3.project3.Model.khoa;
+import com.project3.project3.Model.nganh;
 import com.project3.project3.Model.thanhvien;
 import com.project3.project3.Model.xuly;
 import com.project3.project3.Repository.*;
@@ -93,6 +95,7 @@ public class thanhvienServiceImpl implements thanhvienService {
 
         tv.setEmail(tvDTO.getEmail());
         tv.setPassword(tvDTO.getPassword());
+        tv.setCreated_date(LocalDateTime.now());
 
         thanhvienRepository.save(tv);
         thanhvienSequenceRepository.updateIndex();
@@ -102,8 +105,48 @@ public class thanhvienServiceImpl implements thanhvienService {
 
     @Override
     @Transactional
+    public String saveList(List<ThanhVienDTO> tvDTOs) {
+
+        for (ThanhVienDTO tvDTO : tvDTOs) {
+            thanhvien tv = new thanhvien();
+            tv.setTen(tvDTO.getTen());
+            tv.setSodienthoai(tvDTO.getSodienthoai());
+            tv.setCreated_date(LocalDateTime.now());
+            khoa khoa = khoaRepository.findByName(tvDTO.getTenKhoa());
+            nganh nganh = nganhRepository.getByTen(tvDTO.getTenNganh());
+
+            System.out.println(khoa.getTen() + " " + nganh.getTen());
+
+            tv.setKhoa(khoa);
+            tv.setNganh(nganh);
+
+            tv.setPassword(tvDTO.getPassword());
+            tv.setEmail(tvDTO.getEmail());
+            Long tvId = generateTvId(tv.getKhoa().getId(), tv.getNganh().getId());
+            tv.setId(tvId);
+
+            thanhvienRepository.save(tv);
+            thanhvienSequenceRepository.updateIndex();
+        }
+        return "success";
+    }
+
+    @Override
+    @Transactional
     public void deleteById(Long id) {
         thanhvienRepository.deleteById(id);
+    }
+
+    @Override
+    @Transactional
+    public void deleteByYear(int year) {
+
+        thanhvienRepository.deleteByYear(year);
+    }
+
+    @Override
+    public List<thanhvien> findByYear(int year) {
+        return thanhvienRepository.findByYear(year);
     }
 
 

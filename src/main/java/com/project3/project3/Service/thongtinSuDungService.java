@@ -32,4 +32,8 @@ public interface thongtinSuDungService {
     List<thongtin_sudung> findReturnedByThanhvien(Long tvId);
 
     List<thongtin_sudung> findDatChoByThanhvienId(Long tvId);
+
+    void nullifyThanhvienInThongtinSudung(Long id);
+
+    void deleteByThanhvienId(Long tvId);
 }

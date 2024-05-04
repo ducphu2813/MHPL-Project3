@@ -7,20 +7,15 @@
         <span th:text="${session.thanhvien.id}"></span><br>
 
         Tên:
-        <span type="text"
-              placeholder="Nhập tên"
-              th:text="${session.thanhvien.ten}"></span>
+        <span th:text="${session.thanhvien.ten}"></span>
         <br>
 
         Số địn Thọi:
-        <span type="text"
-              placeholder="Nhập tên"
-              th:text="${session.thanhvien.id}"
+        <span th:text="${session.thanhvien.sodienthoai}"
         ></span><br>
 
         Email:
-        <span type="text"
-              th:text="${session.thanhvien.email}"
+        <span th:text="${session.thanhvien.email}"
         ></span><br>
 
         Khoa:
@@ -29,9 +24,12 @@
         Ngành:
         <span th:text="${session.thanhvien.tenNganh}"></span><br>
 
+        Ngày tạo thành viên:
+        <span th:text="${session.thanhvien.created_date}"></span><br>
+
     </div>
 
-    <div th:if="${dsXuly.size() != 0}">
+    <div th:if="${dsXuly != null && dsXuly.size() != 0 }">
         <h3>Bạn đang có những vi phạm chưa được xử lý</h3>
 
         <table class="table table-bordered table-striped table-hover">

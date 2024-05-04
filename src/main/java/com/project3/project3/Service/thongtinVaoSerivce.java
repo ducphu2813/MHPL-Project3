@@ -12,4 +12,8 @@ public interface thongtinVaoSerivce {
     HashMap<Integer, Integer> getData(int year);
 
     void save(thongtin_vao thongtin_vao);
+
+    void nullifyThanhvienInThongtinVao(Long id);
+
+    void deleteThongtinVaoByThanhvienId(Long id);
 }

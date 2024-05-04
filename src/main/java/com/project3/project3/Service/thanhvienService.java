@@ -22,7 +22,13 @@ public interface thanhvienService {
 
     thanhvien save(ThanhVienDTO tvDTO);
 
+    String saveList(List<ThanhVienDTO> tvDTOs);
+
     void deleteById(Long id);
+
+    void deleteByYear(int year);
+
+    List<thanhvien> findByYear(int year);
 
     thanhvien checkLogin(Long id, String password);
 

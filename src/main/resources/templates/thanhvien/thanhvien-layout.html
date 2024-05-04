@@ -9,11 +9,11 @@
                 Kiểm tra vào khu học tập
             </a>
 
-            <a href="">
+            <a th:href="@{/thanhvien/excel}">
                 Thêm bằng excel
             </a>
 
-            <a href="">
+            <a th:href="@{/thanhvien/deleteByCondition}">
                 Xóa theo điều kiện
             </a>
         </div>
@@ -27,6 +27,7 @@
                 <th>Ngành</th>
                 <th>Số địn thọi</th>
                 <th>Email</th>
+                <th>Ngày tạo</th>
                 <th>Thao tác</th>
             </tr>
             </thead>
@@ -39,6 +40,9 @@
                 <td th:text="${tv.nganh.ten}"></td>
                 <td th:text="${tv.sodienthoai}"></td>
                 <td th:text="${tv.email}"></td>
+                <td>
+                    <span th:text="${#temporals.format(tv.created_date, 'dd/MM/yyyy')}"></span>
+                </td>
                 <td>
                     <a th:href="@{/thanhvien/edit(tvId=${tv.id})}">Sửa</a>
                     <a th:href="@{/thanhvien/delete(tvId=${tv.id})}"
