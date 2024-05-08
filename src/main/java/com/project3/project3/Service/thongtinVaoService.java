@@ -5,7 +5,7 @@ import com.project3.project3.Model.thongtin_vao;
 import java.util.HashMap;
 import java.util.List;
 
-public interface thongtinVaoSerivce {
+public interface thongtinVaoService {
 
     List<thongtin_vao> getAll();
 

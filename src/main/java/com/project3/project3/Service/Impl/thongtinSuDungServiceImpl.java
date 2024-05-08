@@ -7,6 +7,7 @@ import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
 import java.time.LocalDateTime;
+import java.time.temporal.ChronoUnit;
 import java.util.List;
 
 @Service
@@ -37,7 +38,27 @@ public class thongtinSuDungServiceImpl implements thongtinSuDungService {
     @Override
     public boolean checkDatCho(Integer tbId, LocalDateTime tg_datcho) {
         List<thongtin_sudung> tsdList = thongtinSuDungRepository.findByThietbiIdAndTg_datcho(tbId, tg_datcho);
-        return tsdList.isEmpty();
+
+        if (tsdList.isEmpty()) {
+            // Không có thời gian đặt chỗ nào trong ngày đó thì cho đặt chỗ thoải mái
+            return true;
+        }
+
+        LocalDateTime start = tg_datcho.minus(1, ChronoUnit.HOURS);
+        LocalDateTime end = tg_datcho.plus(1, ChronoUnit.HOURS);
+
+        //Kiểm tra trước và sau thời gian đặt chỗ 1 tiếng xem có thời gian đặt chỗ nào khác không
+        for (thongtin_sudung tsd : tsdList) {
+
+            if ((tsd.getTg_datcho().isEqual(start) || tsd.getTg_datcho().isAfter(start)) &&
+                    (tsd.getTg_datcho().isEqual(end) || tsd.getTg_datcho().isBefore(end))) {
+                // Nếu có bất kỳ thời gian đặt chỗ nào trong khoảng 1 tiếng thì không cho đặt chỗ
+                return false;
+            }
+        }
+
+        // Không có thì trả về true, cho đặt chỗ
+        return true;
     }
 
     @Override
@@ -52,19 +73,38 @@ public class thongtinSuDungServiceImpl implements thongtinSuDungService {
 
         List<thongtin_sudung> dangMuon = thongtinSuDungRepository.findBorrowingByThietbiId(tbId);
         List<thongtin_sudung> datCho = thongtinSuDungRepository.findByThietbiIdAndTg_datcho(tbId, LocalDateTime.now());
+        List<thongtin_sudung> allTTSD = thongtinSuDungRepository.findDatCho();
 
+        //thời gian mượn
+        LocalDateTime now = LocalDateTime.now();
+
+        //kiểm tra xem thiết bị có đang được mượn hay không
         for(thongtin_sudung tsd : dangMuon){
             if(tsd.getThietbi().getId().equals(tbId)){
                 return false;
             }
         }
 
-        for(thongtin_sudung tsd : datCho){
-            if(tsd.getThietbi().getId().equals(tbId)){
+        //duyệt qua tất cả danh sách thông tin đặt chỗ, nếu có bất cứ đặt chỗ nào mà sau ngày hiện tại thì không cho mượn
+        for(thongtin_sudung tsd : allTTSD){
+            if(tsd.getThietbi().getId().equals(tbId) && tsd.getTg_datcho().isAfter(now)){
                 return false;
             }
         }
-        return true;
+
+        //trong danh sách datCho, lấy ra thời gian đặt chỗ cuối cùng của ngày hôm đó
+        LocalDateTime lastestDatCho = datCho.stream().filter(tsd -> tsd.getThietbi().getId().equals(tbId))
+                .map(thongtin_sudung::getTg_datcho)
+                .max(LocalDateTime::compareTo)
+                .orElse(null);
+
+        //nếu không tìm thấy, có nghĩa là hôm đó chưa có ai đặt chỗ, cho mượn
+        if(lastestDatCho == null){
+            return true;
+        }
+
+        //thời gian đặt chỗ cuối cùng trong ngày hôm đó + 1 tiếng mà nhỏ hơn thời gian hiện tại thì cho mượn
+        return lastestDatCho.plus(1, ChronoUnit.HOURS).isBefore(now);
     }
 
     //lấy thông tin sử dụng đang được mượn theo id thiết bị
