@@ -111,7 +111,7 @@ public class xulyController {
             xuly.setHinhthuc_xuly(hinhthucXuLyService.findById(Integer.parseInt(htxlId)));
             xuly.setTienphat(Double.parseDouble(tienphat));
             xuly.setLydo(lydo);
-//            xulyService.saveOrUpdate(xuly);
+            xulyService.saveOrUpdate(xuly);
             System.out.println(xuly.getThanhvien().getTen());
             System.out.println(xuly.getHinhthuc_xuly().getHinhthuc());
             System.out.println(xuly.getTienphat());

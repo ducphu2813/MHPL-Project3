@@ -1,18 +1,25 @@
+<!-- Latest compiled and minified CSS -->
+<link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/css/bootstrap.min.css" rel="stylesheet">
+
+<!-- Latest compiled JavaScript -->
+<script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/js/bootstrap.bundle.min.js"></script>
+
+
 <div th:fragment="content">
 
     <!--    Tab link-->
-    <div class="tab">
-        <button class="tablinks btn btn-secondary" onclick="openContent(event, 'all')">Tất cả</button>
-        <button class="tablinks btn btn-primary" onclick="openContent(event, 'renting')">Đang mượn</button>
-        <button class="tablinks btn btn-primary" onclick="openContent(event, 'returned')">Đã trả</button>
-        <button class="tablinks btn btn-primary" onclick="openContent(event, 'booked')">Đặt chỗ</button>
+    <div class="tab d-flex justify-content-center my-2">
+        <button class="tablinks btn btn-secondary mx-2" onclick="openContent(event, 'all')">Tất cả</button>
+        <button class="tablinks btn btn-primary mx-2" onclick="openContent(event, 'renting')">Đang mượn</button>
+        <button class="tablinks btn btn-primary mx-2" onclick="openContent(event, 'returned')">Đã trả</button>
+        <button class="tablinks btn btn-primary mx-2" onclick="openContent(event, 'booked')">Đặt chỗ</button>
     </div>
 
     <!--    Tab content-->
 
 <!--    Bảng tất cả-->
     <div id="all" class="tabcontent" style="display: block">
-        <table>
+        <table class="table table-hover">
             <thead>
                 <tr>
                     <th>Thành viên</th>
@@ -38,7 +45,7 @@
 
 <!--    Bảng đang mượn-->
     <div id="renting" class="tabcontent" style="display: none">
-        <table>
+        <table class="table table-hover">
             <thead>
                 <tr>
                     <th>Thành viên</th>
@@ -60,7 +67,7 @@
 
 <!--    Bảng đã trả-->
     <div id="returned" class="tabcontent" style="display: none">
-        <table>
+        <table class="table table-hover">
             <thead>
                 <tr>
                     <th>Thành viên</th>
@@ -85,7 +92,7 @@
 
 <!--    Bảng đặt chỗ-->
     <div id="booked" class="tabcontent" style="display: none">
-        <table>
+        <table class="table table-hover">
             <thead>
                 <tr>
                     <th>Thành viên</th>

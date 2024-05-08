@@ -1,31 +1,33 @@
 <div th:fragment="content">
 
-        <div>
-            <a th:href="@{/thanhvien/register}">
-                Thêm mới thành viên
-            </a>
+        <div class="container my-3">
+            <div class="d-flex justify-content-center">
+                <a class="btn btn-primary mx-2" th:href="@{/thanhvien/register}">
+                    Thêm mới thành viên
+                </a>
 
-            <a th:href="@{/thanhvien/check}">
-                Kiểm tra vào khu học tập
-            </a>
+                <a class="btn btn-primary mx-2" th:href="@{/thanhvien/check}">
+                    Kiểm tra vào khu học tập
+                </a>
 
-            <a th:href="@{/thanhvien/excel}">
-                Thêm bằng excel
-            </a>
+                <a class="btn btn-primary mx-2" th:href="@{/thanhvien/excel}">
+                    Thêm bằng excel
+                </a>
 
-            <a th:href="@{/thanhvien/deleteByCondition}">
-                Xóa theo điều kiện
-            </a>
+                <a class="btn btn-primary mx-2" th:href="@{/thanhvien/deleteByCondition}">
+                    Xóa theo điều kiện
+                </a>
+            </div>
         </div>
 
-        <table>
+        <table class="table table-hover">
             <thead>
             <tr>
                 <th>Id</th>
                 <th>Tên</th>
                 <th>Khoa</th>
                 <th>Ngành</th>
-                <th>Số địn thọi</th>
+                <th>Số điện thoại</th>
                 <th>Email</th>
                 <th>Ngày tạo</th>
                 <th>Thao tác</th>

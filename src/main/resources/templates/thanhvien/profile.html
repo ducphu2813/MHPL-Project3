@@ -1,36 +1,36 @@
-<div th:fragment="component">
+<div class="box-infomation" th:fragment="component">
 
-    <h2>Thông tin cá nhân</h2>
-
-    <div>
-        Mã số sinh viên:
+    <div class="information-div">
+<!--        <div style="display: flex"><h1 style="margin-right: 10px">Xin chào</h1> <h1 th:text="${session.thanhvien.ten}"></h1></div>-->
+        <h2 style="text-align: center; font-weight: bold">Thông tin cá nhân</h2>
+        <span style="font-weight: bold">Mã số sinh viên:</span>
         <span th:text="${session.thanhvien.id}"></span><br>
 
-        Tên:
+        <span style="font-weight: bold">Tên:</span>
         <span th:text="${session.thanhvien.ten}"></span>
         <br>
 
-        Số địn Thọi:
+        <span style="font-weight: bold">Số điện thoại:</span>
         <span th:text="${session.thanhvien.sodienthoai}"
         ></span><br>
 
-        Email:
+        <span style="font-weight: bold">Email:</span>
         <span th:text="${session.thanhvien.email}"
         ></span><br>
 
-        Khoa:
+        <span style="font-weight: bold">Khoa:</span>
         <span th:text="${session.thanhvien.tenKhoa}"></span><br>
 
-        Ngành:
+        <span style="font-weight: bold">Ngành:</span>
         <span th:text="${session.thanhvien.tenNganh}"></span><br>
 
-        Ngày tạo thành viên:
+        <span style="font-weight: bold">Ngày tạo thành viên:</span>
         <span th:text="${session.thanhvien.created_date}"></span><br>
 
     </div>
 
-    <div th:if="${dsXuly != null && dsXuly.size() != 0 }">
-        <h3>Bạn đang có những vi phạm chưa được xử lý</h3>
+    <div class="xuly-div" th:if="${dsXuly != null && dsXuly.size() != 0 }">
+        <h3 style="text-align: center; font-weight: bold">Bạn đang có những vi phạm chưa được xử lý</h3>
 
         <table class="table table-bordered table-striped table-hover">
             <thead class="table-dark">

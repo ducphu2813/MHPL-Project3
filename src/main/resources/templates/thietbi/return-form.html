@@ -13,47 +13,55 @@
     <title>Document</title>
 </head>
 <body>
-    <div>
-        <input type="text"
+<div class="text-center p-4 bg-primary text-white text-center mb-3">
+    <h1>Trả thiết bị</h1>
+</div>
+<div class="container d-flex justify-content-center">
+    <div class="form-section">
+        <input class="form-control"
+               type="text"
                placeholder="Nhập mã thiết bị"
                id="return-input"
         >
 
-        <button id="return-btn">
-            Trả thiết bị
-        </button>
+        <div class="d-flex justify-content-center my-3">
 
+            <input id="return-btn" class="btn btn-primary" type="submit" value="Trả thiết bị">
+        </div>
     </div>
 
     <div class="message"></div>
+</div>
 
-    <script>
-        $(document).ready(function (){
-            $('#return-btn').click(function() {
-                var tbId = $('#return-input').val();
-                $.ajax({
-                    url: '/ttsd/return',
-                    type: 'POST',
-                    data: {
-                        TbId: tbId
-                    },
-                    success: function (response) {
 
-                        let html = '<div>';
-                        html += '<p>' + response.message + '</p>';
 
-                        if(response.status === 'success') {
-                            html += '<p>' + response.info + '</p>';
-                        }
+<script>
+    $(document).ready(function (){
+        $('#return-btn').click(function() {
+            var tbId = $('#return-input').val();
+            $.ajax({
+                url: '/ttsd/return',
+                type: 'POST',
+                data: {
+                    TbId: tbId
+                },
+                success: function (response) {
 
-                        $('.message').html(html);
-                    },
-                    error: function (response) {
-                        console.log(response);
+                    let html = '<div>';
+                    html += '<p>' + response.message + '</p>';
+
+                    if(response.status === 'success') {
+                        html += '<p>' + response.info + '</p>';
                     }
-                });
+
+                    $('.message').html(html);
+                },
+                error: function (response) {
+                    console.log(response);
+                }
             });
         });
-    </script>
+    });
+</script>
 </body>
 </html>

@@ -11,47 +11,74 @@
     <script src="https://cdnjs.cloudflare.com/ajax/libs/popper.js/1.14.7/umd/popper.min.js"></script>
     <script src="https://stackpath.bootstrapcdn.com/bootstrap/4.3.1/js/bootstrap.min.js"></script>
     <title>Document</title>
+    <style>
+        .xacthuc-box h2{
+            text-align: center; padding: 50px 0;
+            display: block;
+            width: 100%;
+            background-color: #007BFF;
+            color: #fff;
+        }
+        .xacthuc-box form{
+            margin: 50px auto;
+            width: 500px;
+        }
+        .xacthuc-box form input{
+            font-size: 13pt;
+            height: 50px;
+        }
+        .xacthuc-box #btn_submit{
+            margin: 40px 0;
+            float: right;
+            padding: 10px 50px;
+        }
+    </style>
 </head>
 <body>
-    Nhập mã xác thực đã được gửi đến email của bạn
+<div class="xacthuc-box">
+
+    <h2>Nhập mã xác thực đã được gửi đến email của bạn</h2>
     <form th:action="@{/thanhvien/verify}"
           method="post"
           id="verifyForm"
     >
-        <input type="text" name="code" placeholder="Nhập mã xác thực">
-        <input type="submit" value="Xác thực">
+        <div class="form-floating mb-3">
+            <input class="form-control" type="text" name="code" placeholder="Nhập mã xác thực">
+        </div>
+        <input id="btn_submit" class="btn btn-primary" type="submit" value="Xác thực">
+
     </form>
+</div>
+<span id="message"></span>
 
-    <span id="message"></span>
-
-    <script>
-        $(document).ready(function () {
-            $('#verifyForm').submit(function (e) {
-                e.preventDefault();
-                var code = $('input[name="code"]').val();
-                var url = $(this).attr('action');
-                $.ajax({
-                    url: url,
-                    type: 'POST',
-                    data: {
-                        code: code
-                    },
-                    success: function (data) {
-                        console.log(data);
-                        if(data.status === 'failed') {
-                            $('#message').html('<h4 style="color: red">' + data.message + '</h4>');
-                        }
-                        else if(data.status === 'success'){
-                            $('#message').html('<h4 style="color: chartreuse">' + data.message + '</h4>');
-                            window.location.href = '/thanhvien/changeForgotPassword';
-                        }
-                    },
-                    error: function (data) {
-                        console.log(data);
+<script>
+    $(document).ready(function () {
+        $('#verifyForm').submit(function (e) {
+            e.preventDefault();
+            var code = $('input[name="code"]').val();
+            var url = $(this).attr('action');
+            $.ajax({
+                url: url,
+                type: 'POST',
+                data: {
+                    code: code
+                },
+                success: function (data) {
+                    console.log(data);
+                    if(data.status === 'failed') {
+                        $('#message').html('<h4 style="color: red">' + data.message + '</h4>');
                     }
-                });
+                    else if(data.status === 'success'){
+                        $('#message').html('<h4 style="color: chartreuse">' + data.message + '</h4>');
+                        window.location.href = '/thanhvien/changeForgotPassword';
+                    }
+                },
+                error: function (data) {
+                    console.log(data);
+                }
             });
         });
-    </script>
+    });
+</script>
 </body>
 </html>

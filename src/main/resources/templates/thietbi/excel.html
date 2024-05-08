@@ -12,41 +12,52 @@
     <script src="https://stackpath.bootstrapcdn.com/bootstrap/4.3.1/js/bootstrap.min.js"></script>
     <title>Document</title>
 </head>
+
 <body>
-    <h2>Thêm thiết bị bằng excel</h2>
+<form class="container-fluid p-5 bg-primary text-white text-center"
+>
+    <h3>Thêm bằng excel (lưu ý chỉ chấp nhận file có đuôi .xls .xlsx)</h3>
 
-    <form th:action="@{/thietbi/excel}"
-          method="post"
-          enctype="multipart/form-data"
-          id="uploadForm"
-    >
-        <h3>Thêm bằng file excel(lưu ý chỉ chấp nhận file có đuôi .xls .xlsx)</h3>
-        <input type="file" name="file" accept=".xls,.xlsx" required>
-        <button type="submit">Thêm</button>
-    </form>
+</form>
 
-    <script>
-        $(document).ready(function () {
-            $('#uploadForm').on('submit', function (event) {
-                event.preventDefault();
-                var formData = new FormData(this);
-                $.ajax({
-                    url: '/thietbi/excel',
-                    type: 'POST',
-                    data: formData,
-                    processData: false,
-                    contentType: false,
-                    success: function (response) {
-                        $('#message').html(response.message);
-                        alert(response.message);
-                        console.log(response);
-                    },
-                    error: function (error) {
-                        console.log(error);
-                    }
-                });
+<form th:action="@{/thietbi/excel}"
+      method="post"
+      enctype="multipart/form-data"
+      id="uploadForm"
+>
+    <div class="container mt-5  ">
+        <div class="row d-flex justify-content-center">
+            <div class="col-sm-4 ">
+                <input class="my-3" type="file" name="file" accept=".xls,.xlsx" required>
+                <button class="my-3 w-100 btn btn-primary" type="submit">Thêm</button>
+            </div>
+        </div>
+
+    </div>
+</form>
+
+<script>
+    $(document).ready(function () {
+        $('#uploadForm').on('submit', function (event) {
+            event.preventDefault();
+            var formData = new FormData(this);
+            $.ajax({
+                url: '/thietbi/excel',
+                type: 'POST',
+                data: formData,
+                processData: false,
+                contentType: false,
+                success: function (response) {
+                    $('#message').html(response.message);
+                    alert(response.message);
+                    console.log(response);
+                },
+                error: function (error) {
+                    console.log(error);
+                }
             });
         });
-    </script>
+    });
+</script>
 </body>
 </html>

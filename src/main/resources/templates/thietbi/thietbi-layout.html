@@ -1,40 +1,49 @@
-<div th:fragment="content">
+<!-- Latest compiled and minified CSS -->
+<link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/css/bootstrap.min.css" rel="stylesheet">
 
-    <div>
-        <a th:href="@{/thietbi/add}">
+<!-- Latest compiled JavaScript -->
+<script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/js/bootstrap.bundle.min.js"></script>
+
+<div th:fragment="content" class="container">
+
+    <div class="container d-flex justify-content-center my-2">
+        <a class="btn btn-primary mx-2" th:href="@{/thietbi/add}">
             Thêm mới thiết bị
         </a>
 
-        <a th:href="@{/thietbi/excel}">
+        <a class="btn btn-primary mx-2"  th:href="@{/thietbi/excel}">
             Thêm bằng excel
         </a>
 
-        <a th:href="@{/ttsd/rentingForm}">
+        <a class="btn btn-primary mx-2"  th:href="@{/ttsd/rentingForm}">
             Cho mượn thiết bị
         </a>
 
-        <a th:href="@{/ttsd/return}">
+        <a class="btn btn-primary mx-2"  th:href="@{/ttsd/return}">
             Trả thiết bị
         </a>
 
-        <a th:href="@{/thietbi/deleteByCondition}">
+        <a class="btn btn-primary mx-2"  th:href="@{/thietbi/deleteByCondition}">
             Xóa theo loại thiết bị
         </a>
 
     </div>
 
 <!--    Tab link-->
-    <div class="tab">
-        <button class="tablinks nav nav-tabs" onclick="openContent(event, 'all')">Tất cả</button>
-        <button class="tablinks nav nav-tabs" onclick="openContent(event, 'free')">Thiết bị rảnh</button>
-        <button class="tablinks nav nav-tabs" onclick="openContent(event, 'renting')">Đang mượn</button>
+    <div class="container">
+
+        <ul class="tab nav nav-tabs">
+            <li class="nav-item"><a class="tablinks nav-link" onclick="openContent(event, 'all')">Tất cả</a></li>
+            <li class="nav-item"><a class="tablinks nav-link" onclick="openContent(event, 'free')">Thiết bị rảnh</a></li>
+            <li class="nav-item"><a class="tablinks nav-link" onclick="openContent(event, 'renting')">Đang mượn</a></li>
+        </ul>
     </div>
 
 <!--    Tab content-->
 
 <!--    Bảng tất cả thiết bị-->
     <div id="all" class="tabcontent" style="display: block">
-        <table>
+        <table class="table table-hover">
             <thead>
                 <tr>
                     <th>Id</th>
@@ -64,9 +73,9 @@
     </div>
 
 <!--    bảng thiết bị đang rảnh-->
-    <div id="free" class="tabcontent" style="display: none">
+    <div id="free" class="tabcontent " style="display: none">
 <!--        this is free table-->
-        <table>
+        <table class="table table-hover">
             <thead>
             <tr>
                 <th>Id</th>
@@ -98,7 +107,7 @@
 <!--    Bảng đang được mượn-->
     <div id="renting" class="tabcontent" style="display: none">
 <!--        this is renting table-->
-        <table>
+        <table class="table table-hover">
             <thead>
             <tr>
                 <th>Id</th>
