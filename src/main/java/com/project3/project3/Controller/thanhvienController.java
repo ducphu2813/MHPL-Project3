@@ -587,7 +587,7 @@ public class thanhvienController {
 
         Map<String, String> response = new HashMap<>();
 
-        //kiếm mã dựa trên cả id của thành viên đang đổi mật khẩu và mã xác thực
+        //kiếm mã dựa trên cả id của thành viên đang đổi mật khẩu(đã được lưu vào session khi nhập mail) và mã xác thực
         VerificationCode verificationCode = verificationCodeService.findByCodeAndThanhvienId(code, (Long) session.getAttribute("newPassTv"));
 
         if(verificationCode == null){
