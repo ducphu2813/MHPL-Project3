@@ -11,7 +11,6 @@ import org.springframework.validation.BindingResult;
 import org.springframework.web.bind.annotation.*;
 import org.springframework.web.method.annotation.MethodArgumentTypeMismatchException;
 import org.springframework.web.multipart.MultipartFile;
-import org.springframework.web.servlet.mvc.support.RedirectAttributes;
 
 import java.io.InputStream;
 import java.time.LocalDateTime;
@@ -30,7 +29,7 @@ public class thanhvienController {
     private final xulyService xulyService;
     private final EmailService emailService;
     private final VerificationCodeService verificationCodeService;
-    private final thongtinVaoSerivce thongtinVaoSerivce;
+    private final thongtinVaoService thongtinVaoService;
     private final ExcelService excelService;
 
     public thanhvienController(thanhvienService thanhvienService,
@@ -41,7 +40,7 @@ public class thanhvienController {
                                EmailService emailService,
                                VerificationCodeService verificationCodeService,
                                xulyService xulyService,
-                               thongtinVaoSerivce thongtinVaoSerivce,
+                               thongtinVaoService thongtinVaoService,
                                ExcelService excelService) {
         this.thanhvienService = thanhvienService;
         this.khoaService = khoaService;
@@ -51,7 +50,7 @@ public class thanhvienController {
         this.emailService = emailService;
         this.verificationCodeService = verificationCodeService;
         this.xulyService = xulyService;
-        this.thongtinVaoSerivce = thongtinVaoSerivce;
+        this.thongtinVaoService = thongtinVaoService;
         this.excelService = excelService;
     }
 
@@ -159,7 +158,7 @@ public class thanhvienController {
         else{
             //xóa luôn những thứ liên quan đến thành viên
             for(thanhvien tv : dsTvByYear){
-                thongtinVaoSerivce.deleteThongtinVaoByThanhvienId(tv.getId());
+                thongtinVaoService.deleteThongtinVaoByThanhvienId(tv.getId());
                 thongtinSuDungService.deleteByThanhvienId(tv.getId());
                 xulyService.deleteByThanhvien(tv.getId());
                 verificationCodeService.deleteByThanhvienId(tv.getId());
@@ -500,7 +499,7 @@ public class thanhvienController {
                 model.addAttribute("check", 2);
                 thongtin_vao thongtinVao = new thongtin_vao();
                 thongtinVao.setThanhvien(tv);
-                thongtinVaoSerivce.save(thongtinVao);
+                thongtinVaoService.save(thongtinVao);
             }
         }
         catch (NumberFormatException e){

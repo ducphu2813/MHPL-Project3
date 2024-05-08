@@ -1,0 +1,80 @@
+<!doctype html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport"
+          content="width=device-width, user-scalable=no, initial-scale=1.0, maximum-scale=1.0, minimum-scale=1.0">
+    <meta http-equiv="X-UA-Compatible" content="ie=edge">
+    <script src="https://code.jquery.com/jquery-3.3.1.slim.min.js"></script>
+    <script src="https://code.jquery.com/jquery-3.6.0.min.js"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/popper.js/1.14.7/umd/popper.min.js"></script>
+    <title>Document</title>
+
+</head>
+<body>
+
+<h1>Thống kê số lượng người vào khu học tập theo từng tháng trong năm</h1>
+
+Chọn năm: <select id="yearSelect"></select><br>
+
+<canvas id="myChart" style="width:100%;max-width:1400px;height: 500px"></canvas>
+
+<script src="https://cdn.jsdelivr.net/npm/chart.js">
+</script>
+
+<script>
+    var ctx = document.getElementById('myChart');
+
+    var chartData = {
+        type: 'bar',
+        data: {
+            labels: ['Tháng 1', 'Tháng 2', 'Tháng 3', 'Tháng 4', 'Tháng 5', 'Tháng 6', 'Tháng 7', 'Tháng 8', 'Tháng 9', 'Tháng 10', 'Tháng 11', 'Tháng 12'],
+            datasets: [{
+                label: 'Số thành viên vào khu học tập',
+                data: [],
+                borderWidth: 1
+            }]
+        },
+        options: {
+            scales: {
+                y: {
+                    beginAtZero: true
+                }
+            }
+        }
+    };
+
+    var myChart = new Chart(ctx, chartData);
+
+    var select = document.getElementById("yearSelect");
+    var currentYear = new Date().getFullYear();
+
+    for (var year = 2023; year <= currentYear; year++) {
+        var option = document.createElement("option");
+        option.text = year;
+        option.value = year;
+        select.appendChild(option);
+    }
+
+    $('#yearSelect').change(function() {
+        var year = $(this).val();
+        $.ajax({
+            url: '/ttv/analysis',
+            type: 'POST',
+            contentType: 'application/json',
+            data: JSON.stringify({ // chuyển thành dạng json
+                year: year
+            }),
+            success: function (data) {
+                console.log(data);
+                chartData.data.datasets[0].data = Object.values(data);
+                myChart.update();
+            },
+            error: function (data) {
+                console.log(data);
+            }
+        });
+    });
+</script>
+</body>
+</html>
