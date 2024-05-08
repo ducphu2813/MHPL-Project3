@@ -7,108 +7,121 @@
     <meta http-equiv="X-UA-Compatible" content="ie=edge">
     <link rel="stylesheet" href="/css/form-dangky.css">
     <title>Đăng ký thành viên online</title>
+    <!-- Latest compiled and minified CSS -->
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/css/bootstrap.min.css" rel="stylesheet">
+
+    <!-- Latest compiled JavaScript -->
+    <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/js/bootstrap.bundle.min.js"></script>
 </head>
 <body>
-    <div>
-        Đăng ký thành viên online
-    </div>
-    <div class="form-section">
-        <form action="#"
-              method="post"
-              th:action="@{/thanhvien/register}"
-              th:object="${tv}"
-        >
+<div class="text-center p-4 bg-primary text-white text-center mb-3">
+   <h1> Đăng ký thành viên online</h1>
+</div>
+   <div class="container d-flex justify-content-center">
+           <div class="form-section">
+               <form action="#"
+                     method="post"
+                     th:action="@{/thanhvien/register}"
+                     th:object="${tv}"
+               >
 
-            <input type="text"
-                   placeholder="Nhập tên"
-                   th:field="*{ten}"
-            ><br>
-            <div>
-                <span th:if="${#fields.hasErrors('ten')}"
-                      th:errors="*{ten}"
-                      class="error"
-                ></span>
-            </div>
-            <br>
+                       <input class="form-control"
+                              type="text"
+                              placeholder="Nhập tên"
+                              th:field="*{ten}"
+                              style="width: 500px;">
+                       <div>
+                           <br>
+        <span th:if="${#fields.hasErrors('ten')}"
+              th:errors="*{ten}"
+              class="error"></span>
+                       </div>
 
-            <input type="number"
-                   placeholder="Số điện thoại"
-                   th:field="*{sodienthoai}"
-            ><br>
-            <div>
+
+                       <input class="form-control"
+                              type="tel"
+                              placeholder="Số điện thoại"
+                              th:field="*{sodienthoai}">
+                   <div>
+                       <br>
                 <span th:if="${#fields.hasErrors('sodienthoai')}"
                       th:errors="*{sodienthoai}"
                       class="error"
                 ></span>
-            </div>
-            <br>
+                   </div>
+                  <div class="mb-3">
+                      <label class="form-label">Chọn Khoa</label>
+                      <select class="form-select mb-3"
+                              th:field="*{khoaId}">
+                          <option th:each="k : ${dsKhoa}"
+                                  th:value="${k.id}"
+                                  th:text="${k.ten}"
+                          ></option>
+                      </select>
+                      <label class="form-label">Chọn ngành</label>
+                      <select class="form-select"
+                              th:field="*{nganhId}">
+                          <option th:each="n : ${dsNganh}"
+                                  th:value="${n.id}"
+                                  th:text="${n.ten}"
+                          ></option>
+                      </select>
+                  </div>
 
-            Chọn Khoa
-            <select th:field="*{khoaId}">
-                <option th:each="k : ${dsKhoa}"
-                        th:value="${k.id}"
-                        th:text="${k.ten}"
-                ></option>
-            </select><br><br>
 
-            Chọn Ngành
-            <select th:field="*{nganhId}">
-                <option th:each="n : ${dsNganh}"
-                        th:value="${n.id}"
-                        th:text="${n.ten}"
-                ></option>
-            </select><br><br>
 
-            <input type="text"
-                   placeholder="Email"
-                   th:field="*{email}"
-            ><br>
-            <div>
+                   <input class="form-control"
+                           type="text"
+                          placeholder="Email"
+                          th:field="*{email}"
+                   ><br>
+                   <div>
                 <span th:if="${#fields.hasErrors('email')}"
                       th:errors="*{email}"
                       class="error"
                 ></span>
-            </div>
-            <br>
-
-
-            <input type="password"
-                   placeholder="Mật khẩu"
-                   th:field="*{password}"
-            ><br>
-            <div>
+                   </div>
+                   <input class="form-control"
+                           type="password"
+                          placeholder="Mật khẩu"
+                          th:field="*{password}"
+                    >
+                   <div>
                 <span th:if="${#fields.hasErrors('password')}"
                       th:errors="*{password}"
                       class="error"
                 ></span>
-            </div>
-            <br>
-
-            <input type="password"
-                   placeholder="Nhập lại mật khẩu"
-                   th:field="*{repassword}"
-            ><br>
-            <div>
+                   </div>
+                   <br>
+                   <input   class="form-control"
+                           type="password"
+                          placeholder="Nhập lại mật khẩu"
+                          th:field="*{repassword}"
+                   ><br>
+                   <div>
                 <span class="error"
                       th:if="${#fields.hasErrors('repassword')}"
                       th:errors="*{repassword}"
                 ></span>
 
-<!--                lỗi ko nhập lại đúng mật khẩu-->
-                <span th:if="${#fields.hasErrors('passwordMatching')}"
-                      th:errors="*{passwordMatching}"
-                      class="error"
-                >
+                       <!--                lỗi ko nhập lại đúng mật khẩu-->
+                       <span th:if="${#fields.hasErrors('passwordMatching')}"
+                             th:errors="*{passwordMatching}"
+                             class="error"
+                       >
 
                 </span>
-            </div>
-            <br>
+                   </div>
 
-            Đã có tài khoản? <a href="/thanhvien/login">Đăng nhập</a><br><br>
+                   Đã có tài khoản? <a href="/thanhvien/login">Đăng nhập</a><br><br>
+                  <div class="d-flex justify-content-center">
 
-            <input type="submit" value="Đăng ký">
-        </form>
-    </div>
+                      <input class="btn btn-primary" type="submit" value="Đăng ký">
+                  </div>
+               </form>
+           </div>
+
+   </div>
 
 
 </body>

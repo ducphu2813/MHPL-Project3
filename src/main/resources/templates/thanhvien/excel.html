@@ -13,15 +13,27 @@
     <title>Document</title>
 </head>
 <body>
+    <form class="container-fluid p-5 bg-primary text-white text-center"
+    >
+        <h3>Thêm bằng file excel(lưu ý chỉ chấp nhận file có đuôi .xls .xlsx)</h3>
+
+    </form>
     <form th:action="@{/thanhvien/excel}"
           method="post"
           enctype="multipart/form-data"
           id="uploadForm"
     >
-        <h3>Thêm bằng file excel(lưu ý chỉ chấp nhận file có đuôi .xls .xlsx)</h3>
-        <input type="file" name="file" accept=".xls,.xlsx" required>
-        <button type="submit">Thêm</button>
+        <div class="container mt-5  ">
+            <div class="row d-flex justify-content-center">
+                <div class="col-sm-4 ">
+                    <input class="my-3" type="file" name="file" accept=".xls,.xlsx" required>
+                    <button class="my-3 w-100 btn btn-primary" type="submit">Thêm</button>
+                </div>
+            </div>
+
+        </div>
     </form>
+
 
     <script>
         $(document).ready(function () {

@@ -11,46 +11,80 @@
     <script src="https://cdnjs.cloudflare.com/ajax/libs/popper.js/1.14.7/umd/popper.min.js"></script>
     <script src="https://stackpath.bootstrapcdn.com/bootstrap/4.3.1/js/bootstrap.min.js"></script>
     <title>Document</title>
+    <style>
+        .nav-bar-header{
+            /*background-color: #007BFF;*/
+            padding: 20px;
+            border-bottom: 2px solid #ddd;
+        }
+        .nav-bar-header ul{
+            width: 100% ;
+            padding: 0;
+            list-style: none;
+            display: flex;
+            justify-content: center;
+        }
+        .nav-bar-header ul li{
+            /*margin: 20px;*/
+        }
+        .box-infomation{
+            display: flex;
+            margin-top: 50px;
+        }
+        .box-infomation .information-div{
+            width: 25%;
+            padding: 20px;
+            margin-left: 30px;
+            border: 1px solid black;
+            margin-right: 20px;
+        }
+        .box-infomation .information-div span{
+            display: inline-block;
+            font-size: 15pt;
+            padding-top: 20px;
+        }
+        .box-infomation .xuly-div{
+            width: 75%;
+            padding-right: 50px;
+        }
+    </style>
 </head>
 <body>
-    <div>
-        <ul>
-            <li><a th:href="@{/thanhvien/profile}">Thông tin cá nhân</a></li>
-            <li><a th:href="@{/thanhvien/rentHistory}">Lịch sử mượn</a></li>
-            <li><a th:href="@{/thanhvien/violations}">Danh sách vi phạm</a></li>
-            <li><a th:href="@{/thanhvien/rent}">Đặt chỗ mượn thiết bị</a></li>
-            <li><a th:href="@{/thanhvien/changePassword}">Đổi mật khẩu</a></li>
-            <li><a th:href="@{/thanhvien/logout}">Đăng xuất</a></li>
-        </ul>
-    </div>
+<div class="nav-bar-header">
+    <ul class="nav d-flex justify-content-center">
+        <li class="nav-item mx-2"><a class="nav-link btn btn-primary" th:href="@{/thanhvien/profile}">Thông tin cá nhân</a></li>
+        <li class="nav-item mx-2"><a class="nav-link btn btn-primary" th:href="@{/thanhvien/rentHistory}">Lịch sử mượn</a></li>
+        <li class="nav-item mx-2"><a class="nav-link btn btn-primary" th:href="@{/thanhvien/violations}">Danh sách vi phạm</a></li>
+        <li class="nav-item mx-2"><a class="nav-link btn btn-primary" th:href="@{/thanhvien/rent}">Đặt chỗ mượn thiết bị</a></li>
+        <li class="nav-item mx-2"><a class="nav-link btn btn-primary" th:href="@{/thanhvien/changePassword}">Đổi mật khẩu</a></li>
+        <li class="nav-item mx-2"><a class="nav-link btn btn-primary" th:href="@{/thanhvien/logout}">Đăng xuất</a></li>
+    </ul>
+</div>
 
-    <div>
-        Xin chào <span th:text="${session.thanhvien.ten}"></span>
-    </div>
 
-    <div th:if="${flag == 'profile'}">
 
-        <div th:replace="~{thanhvien/profile :: component}">
-
-        </div>
+<div class="main-container"  th:if="${flag == 'profile'}">
+    <div th:replace="~{thanhvien/profile :: component}">
 
     </div>
 
-    <div th:if="${flag == 'lichsumuon'}">
+</div>
 
-            <div th:replace="~{thanhvien/thanhvien-lichsumuon :: component}">
+<div th:if="${flag == 'lichsumuon'}">
 
-            </div>
+    <div th:replace="~{thanhvien/thanhvien-lichsumuon :: component}">
+
+    </div>
+
+</div>
+
+<div th:if="${flag == 'vipham'}">
+
+    <div th:replace="~{thanhvien/thanhvien-vipham :: component}">
 
     </div>
 
-    <div th:if="${flag == 'vipham'}">
-
-        <div th:replace="~{thanhvien/thanhvien-vipham :: component}">
-
-        </div>
-
-    </div>
+</div>
 
 
 </body>

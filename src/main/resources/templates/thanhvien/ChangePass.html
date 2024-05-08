@@ -11,53 +11,86 @@
     <script src="https://cdnjs.cloudflare.com/ajax/libs/popper.js/1.14.7/umd/popper.min.js"></script>
     <script src="https://stackpath.bootstrapcdn.com/bootstrap/4.3.1/js/bootstrap.min.js"></script>
     <title>Document</title>
+    <style>
+        .changePass-box h2{
+            text-align: center; padding: 50px 0;
+            display: block;
+            width: 100%;
+            background-color: #007BFF;
+            color: #fff;
+        }
+        .changePass-box form{
+            margin: 50px auto;
+            width: 500px;
+        }
+        .changePass-box form input{
+            font-size: 13pt;
+            height: 50px;
+        }
+        .changePass-box #btn_submit{
+            margin: 40px 0;
+            float: right;
+            padding: 10px 50px;
+        }
+    </style>
 </head>
 <body>
-    <h2>Đổi mật khẩu mới</h2>
+<div class="changePass-box">
+    <h2 >Đổi mật khẩu mới</h2>
 
     <form th:action="@{/thanhvien/changePassword}" method="post">
-        <input type="password" name="password" placeholder="Nhập mật khẩu mới">
-        <input type="password" name="repassword" placeholder="Nhập lại mật khẩu mới">
-        <input type="submit" value="Đổi mật khẩu">
+
+        <div class="form-floating mb-3">
+            <!--            <label for="floatingInput">Email address</label>-->
+
+            <input type="password" name="password" class="form-control" id="floatingInput" placeholder="Nhập mật khẩu mới">
+        </div>
+        <div class="form-floating">
+            <!--            <label for="floatingPassword">Password</label>-->
+
+            <input type="password" name="repassword" class="form-control" id="floatingPassword" placeholder="Nhập lại mật khẩu mới">
+        </div>
+        <input id="btn_submit" class="btn btn-primary" type="submit" value="Đổi mật khẩu">
     </form>
 
     <span id="message"></span>
+</div>
 
-    <script>
-        $(document).ready(function () {
-            $('form').submit(function (e) {
-                e.preventDefault();
-                var password = $('input[name="password"]').val();
-                var repassword = $('input[name="repassword"]').val();
-                var url = $(this).attr('action');
-                $.ajax({
-                    url: url,
-                    type: 'POST',
-                    data: {
-                        password: password,
-                        repassword: repassword
-                    },
-                    success: function (data) {
-                        console.log(data);
-                        if(data.status === 'failed') {
-                            $('#message').html('<h4 style="color: red">' + data.message + '</h4>');
-                        }
-                        else if(data.status === 'success'){
-                            $('#message').html('<h4 style="color: chartreuse">' + data.message + '</h4>');
-                            alert('Đổi mật khẩu thành công');
-                            window.location.href = '/thanhvien/home';
-                        }
-                        else if(data.status === 'notlogin'){
-                            window.location.href = '/thanhvien/login';
-                        }
-                    },
-                    error: function (data) {
-                        console.log(data);
+<script>
+    $(document).ready(function () {
+        $('form').submit(function (e) {
+            e.preventDefault();
+            var password = $('input[name="password"]').val();
+            var repassword = $('input[name="repassword"]').val();
+            var url = $(this).attr('action');
+            $.ajax({
+                url: url,
+                type: 'POST',
+                data: {
+                    password: password,
+                    repassword: repassword
+                },
+                success: function (data) {
+                    console.log(data);
+                    if(data.status === 'failed') {
+                        $('#message').html('<h4 style="color: red">' + data.message + '</h4>');
                     }
-                });
+                    else if(data.status === 'success'){
+                        $('#message').html('<h4 style="color: chartreuse">' + data.message + '</h4>');
+                        alert('Đổi mật khẩu thành công');
+                        window.location.href = '/thanhvien/home';
+                    }
+                    else if(data.status === 'notlogin'){
+                        window.location.href = '/thanhvien/login';
+                    }
+                },
+                error: function (data) {
+                    console.log(data);
+                }
             });
         });
-    </script>
+    });
+</script>
 
 </body>
 </html>
