@@ -5,13 +5,11 @@
     <meta name="viewport"
           content="width=device-width, user-scalable=no, initial-scale=1.0, maximum-scale=1.0, minimum-scale=1.0">
     <meta http-equiv="X-UA-Compatible" content="ie=edge">
-    <script src="https://code.jquery.com/jquery-3.3.1.slim.min.js"></script>
     <script src="https://code.jquery.com/jquery-3.6.0.min.js"></script>
     <script src="https://cdnjs.cloudflare.com/ajax/libs/popper.js/1.14.7/umd/popper.min.js"></script>
-    <!-- Latest compiled and minified CSS -->
     <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/css/bootstrap.min.css" rel="stylesheet">
-    <!-- Latest compiled JavaScript -->
     <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/js/bootstrap.bundle.min.js"></script>
+
     <title>Document</title>
 </head>
 <body>
@@ -34,11 +32,12 @@
                         style="width: 500px"
                 >
                 <br>
-        </div>
+
             <div class=" d-flex justify-content-center">
                 <input class="btn btn-primary" type="submit" value="Tìm kiếm">
             </div>
         </form>
+        </div>
 
         <div class="result d-flex justify-content-center"
              th:if="${dsThietBi != null}"
@@ -57,7 +56,7 @@
                     <td th:text="${thietbi.mota}"></td>
                     <td th:text="${thietbi.loai_thietbi.ten}"></td>
                     <td>
-                        <button type="button" class="btn btn-primary" data-toggle="modal" th:attr="data-target='#bookingModal' + ${thietbi.id}">
+                        <button type="button" class="btn btn-primary" data-bs-toggle="modal" th:attr="data-bs-target='#bookingModal' + ${thietbi.id}">
                             Đặt chỗ
                         </button>
 
@@ -79,6 +78,7 @@
                                                 <input type="datetime-local" id="tg_datcho" th:name="tg_datcho" class="form-control date-input" required>
                                                 <span th:id="'message' + ${thietbi.id}"></span>
                                             </div>
+                                            <br>
                                             <button type="submit" class="btn btn-primary">Đặt chỗ</button>
                                         </form>
                                     </div>
@@ -129,12 +129,14 @@
                             if(data.status === 'notloggedin') {
                                 window.location.href = '/thanhvien/login';
                             }
-                            // Show the response from the server in the modal
+                            // hiện response từ server
                             if(data.status === 'failed') {
                                 $('#message'+ data.tbid).html('<h4 style="color: red">' + data.message + '</h4>');
+                                alert(data.message)
                             }
                             else if(data.status === 'success'){
                                 $('#message' + data.tbid).html('<h4 style="color: chartreuse">' + data.message + '</h4>');
+                                alert(data.message)
                             }
                         },
                         error: function(data) {

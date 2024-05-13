@@ -172,14 +172,12 @@ public class thanhvienServiceImpl implements thanhvienService {
 
     @Override
     public thanhvien checkLogin(Long id, String password) {
-
         try{
             return thanhvienRepository.checkLogin(id, password);
         }
         catch (Exception e) {
             return null;
         }
-
     }
 
     //kiểm tra xem thành viên có bị cấm mượn thiết bị không, nếu tìm thấy xử lý nào có trạng thái false thì trả về true

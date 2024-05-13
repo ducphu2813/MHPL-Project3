@@ -15,11 +15,11 @@
     <!--    Tab link-->
     <div class="container">
 
-        <ul class="tab nav nav-tabs">
-            <li class="nav-item"><a class="tablinks nav-link active" onclick="openContent(event, 'all')">Tất cả</a></li>
-            <li class="nav-item"><a class="tablinks nav-link" onclick="openContent(event, 'false')">Chưa xử lý</a></li>
-            <li class="nav-item"><a class="tablinks nav-link" onclick="openContent(event, 'true')">Đã xử lý</a></li>
-        </ul>
+        <div class="tab d-flex justify-content-center my-2">
+            <button class="tablinks btn btn-secondary mx-2" onclick="openContent(event, 'all')">Tất cả</button>
+            <button class="tablinks btn btn-primary mx-2" onclick="openContent(event, 'false')">Chưa xử lý</button>
+            <button class="tablinks btn btn-primary mx-2" onclick="openContent(event, 'true')">Đã xử lý</button>
+        </div>
     </div>
 
 <!--    Tab content-->
@@ -151,10 +151,11 @@
 
             tablinks = document.getElementsByClassName("tablinks");
             for (i = 0; i < tablinks.length; i++) {
+                tablinks[i].className = tablinks[i].className.replace(" btn-secondary", " btn-primary");
             }
 
             document.getElementById(contentName).style.display = "block";
-
+            evt.currentTarget.className += evt.currentTarget.className.replace(" btn-primary", " btn-secondary");
         }
     </script>
 

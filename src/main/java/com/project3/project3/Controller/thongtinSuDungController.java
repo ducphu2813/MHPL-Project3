@@ -134,7 +134,7 @@ public class thongtinSuDungController {
         }
         catch (NumberFormatException e) {
             response.put("status", "error");
-            response.put("message", "Mã chỉ chứa số, không chứa kí tự khác");
+            response.put("message", "Mã chỉ chứa số, không chứa kí tự khác và không được để trống");
             return response;
         }
     }
@@ -169,7 +169,7 @@ public class thongtinSuDungController {
         }
         catch (NumberFormatException e) {
             response.put("status", "error");
-            response.put("message", "Mã chỉ chứa số, không chứa kí tự khác");
+            response.put("message", "Mã chỉ chứa số, không chứa kí tự khác và không được để trống");
             return response;
         }
 

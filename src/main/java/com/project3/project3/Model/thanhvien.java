@@ -21,14 +21,6 @@ public class thanhvien {
     @NotBlank(message = "Tên không được để trống")
     private String ten;
 
-    @ManyToOne(fetch = FetchType.EAGER)
-    @JoinColumn(name = "id_khoa")
-    private khoa khoa;
-
-    @ManyToOne(fetch = FetchType.EAGER)
-    @JoinColumn(name = "id_nganh")
-    private nganh nganh;
-
     @Column(name = "sodienthoai")
     @NotBlank(message = "Số điện thoại không được để trống")
     private String sodienthoai;
@@ -41,6 +33,14 @@ public class thanhvien {
     @Column(name = "password")
     @NotBlank(message = "Mật khẩu không được để trống")
     private String password;
+
+    @ManyToOne(fetch = FetchType.EAGER)
+    @JoinColumn(name = "id_khoa")
+    private khoa khoa;
+
+    @ManyToOne(fetch = FetchType.EAGER)
+    @JoinColumn(name = "id_nganh")
+    private nganh nganh;
 
     @Column(name = "created_date")
     private LocalDateTime created_date = LocalDateTime.now();

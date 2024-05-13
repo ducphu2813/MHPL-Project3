@@ -19,10 +19,9 @@
     <form th:action="@{/thanhvien/changeForgotPassword}" method="post">
         <input type="password" name="password" placeholder="Nhập mật khẩu mới">
         <input type="password" name="repassword" placeholder="Nhập lại mật khẩu mới">
+        <span id="message"></span>
         <input type="submit" value="Đổi mật khẩu">
     </form>
-
-    <span id="message"></span>
 
     <script>
         $(document).ready(function () {

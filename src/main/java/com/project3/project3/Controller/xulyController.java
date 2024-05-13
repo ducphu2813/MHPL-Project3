@@ -82,6 +82,7 @@ public class xulyController {
             else{
                 lydoResponse.put("status", "success");
             }
+            tienphatResponse.put("status", "success");
 
             //check tiền phạt
             if(Double.parseDouble(tienphat) < 0){
@@ -93,12 +94,17 @@ public class xulyController {
             }
         }
         catch (NoSuchElementException e) {
-            tvResponse.put("status", "error");
-            tvResponse.put("message", "Không tìm thấy thành viên");
+            if(tvResponse.get("info") == null){
+                tvResponse.put("status", "error");
+                tvResponse.put("message", "Không tìm thấy thành viên");
+            }
         }
         catch (NumberFormatException e) {
-            tvResponse.put("status", "error");
-            tvResponse.put("message", "Mã chỉ chứa số, không chứa kí tự khác và không được bỏ trống");
+            if(tvResponse.get("info") == null){
+                tvResponse.put("status", "error");
+                tvResponse.put("message", "Mã chỉ chứa số, không chứa kí tự khác và không được bỏ trống");
+            }
+
         }
 
         response.put("tvResponse", tvResponse);
@@ -109,7 +115,12 @@ public class xulyController {
             xuly xuly = new xuly();
             xuly.setThanhvien(thanhvienService.findById(Long.parseLong(tvId)));
             xuly.setHinhthuc_xuly(hinhthucXuLyService.findById(Integer.parseInt(htxlId)));
-            xuly.setTienphat(Double.parseDouble(tienphat));
+            if(tienphat != null && !tienphat.isEmpty()
+                    && Double.parseDouble(tienphat) > 0){
+                xuly.setTienphat(Double.parseDouble(tienphat));
+            }else{
+                xuly.setTienphat(null);
+            }
             xuly.setLydo(lydo);
             xuly.setNgay_xuly(java.time.LocalDateTime.now());
             xulyService.saveOrUpdate(xuly);

@@ -31,24 +31,25 @@
                               th:field="*{ten}"
                               style="width: 500px;">
                        <div>
-                           <br>
-        <span th:if="${#fields.hasErrors('ten')}"
-              th:errors="*{ten}"
-              class="error"></span>
+                        <span th:if="${#fields.hasErrors('ten')}"
+                              th:errors="*{ten}"
+                              class="error"></span>
                        </div>
-
+                        <br>
 
                        <input class="form-control"
                               type="tel"
                               placeholder="Số điện thoại"
                               th:field="*{sodienthoai}">
                    <div>
-                       <br>
+
                 <span th:if="${#fields.hasErrors('sodienthoai')}"
                       th:errors="*{sodienthoai}"
                       class="error"
                 ></span>
                    </div>
+                   <br>
+
                   <div class="mb-3">
                       <label class="form-label">Chọn Khoa</label>
                       <select class="form-select mb-3"
@@ -74,13 +75,15 @@
                            type="text"
                           placeholder="Email"
                           th:field="*{email}"
-                   ><br>
+                   >
                    <div>
                 <span th:if="${#fields.hasErrors('email')}"
                       th:errors="*{email}"
                       class="error"
                 ></span>
                    </div>
+                   <br>
+
                    <input class="form-control"
                            type="password"
                           placeholder="Mật khẩu"
@@ -97,7 +100,7 @@
                            type="password"
                           placeholder="Nhập lại mật khẩu"
                           th:field="*{repassword}"
-                   ><br>
+                   >
                    <div>
                 <span class="error"
                       th:if="${#fields.hasErrors('repassword')}"
@@ -112,6 +115,7 @@
 
                 </span>
                    </div>
+                   <br>
 
                    Đã có tài khoản? <a href="/thanhvien/login">Đăng nhập</a><br><br>
                   <div class="d-flex justify-content-center">

@@ -43,17 +43,25 @@
         <div class="form-floating mb-3">
             <!--            <label for="floatingInput">Email address</label>-->
 
+            <input type="password" name="currentPass" class="form-control" id="floatingInputP" placeholder="Nhập mật khẩu hiện tại">
+        </div>
+
+        <div class="form-floating mb-3">
+            <!--            <label for="floatingInput">Email address</label>-->
+
             <input type="password" name="password" class="form-control" id="floatingInput" placeholder="Nhập mật khẩu mới">
         </div>
+
         <div class="form-floating">
             <!--            <label for="floatingPassword">Password</label>-->
 
             <input type="password" name="repassword" class="form-control" id="floatingPassword" placeholder="Nhập lại mật khẩu mới">
         </div>
+
+        <br>
+        <span id="message"></span>
         <input id="btn_submit" class="btn btn-primary" type="submit" value="Đổi mật khẩu">
     </form>
-
-    <span id="message"></span>
 </div>
 
 <script>
@@ -62,11 +70,13 @@
             e.preventDefault();
             var password = $('input[name="password"]').val();
             var repassword = $('input[name="repassword"]').val();
+            var currentPass = $('input[name="currentPass"]').val();
             var url = $(this).attr('action');
             $.ajax({
                 url: url,
                 type: 'POST',
                 data: {
+                    currentPass: currentPass,
                     password: password,
                     repassword: repassword
                 },

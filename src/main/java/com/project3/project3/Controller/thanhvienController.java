@@ -61,7 +61,6 @@ public class thanhvienController {
 
         model.addAttribute("dsThanhVien", dsThanhVien);
 
-//        return "testThanhVien";
         return "layout/layout";
     }
 
@@ -235,6 +234,7 @@ public class thanhvienController {
     @ResponseBody
     public Map<String, String> changePassword(@RequestParam("password") String newPass,
                                               @RequestParam("repassword") String rePass,
+                                              @RequestParam("currentPass") String currentPass,
                                               HttpSession session,
                                               Model model){
 
@@ -250,6 +250,30 @@ public class thanhvienController {
         }
 
         ThanhVienDTO tvDTO = (ThanhVienDTO) session.getAttribute("thanhvien");
+
+        if(!tvDTO.getPassword().equals(currentPass)){
+            response.put("message", "Mật khẩu hiện tại không chính xác");
+            response.put("status", "failed");
+            return response;
+        }
+
+        if(newPass.equals(currentPass)){
+            response.put("message", "Mật khẩu mới không được trùng với mật khẩu cũ");
+            response.put("status", "failed");
+            return response;
+        }
+
+        if(newPass.length() < 6){
+            response.put("message", "Mật khẩu mới phải có ít nhất 6 kí tự");
+            response.put("status", "failed");
+            return response;
+        }
+
+        if(newPass.trim().isEmpty() || rePass.trim().isEmpty()){
+            response.put("message", "Vui lòng điền đầy đủ thông tin");
+            response.put("status", "failed");
+            return response;
+        }
 
         if(!newPass.equals(rePass)){
             response.put("message", "Mật khẩu nhập lại không khớp");
@@ -361,25 +385,12 @@ public class thanhvienController {
     public String registerForm(Model model, HttpSession session){
 
         if(session.getAttribute("thanhvien") != null){
-
             //kiểm tra trong session có thông tin thành viên không,
             // nếu có thì chuyển hướng về trang home
             return "redirect:/thanhvien/home";
         }
 
-
-
-        model.addAttribute("tv", new ThanhVienDTO(
-                null,
-                null,
-                null,
-                null,
-                null,
-                null,
-                null,
-                null,
-                null,
-                LocalDateTime.now()));
+        model.addAttribute("tv", new ThanhVienDTO(null, null, null, null, null, null, null, null, null, LocalDateTime.now()));
 
         return "thanhvien/form-dangky";
     }
@@ -394,13 +405,11 @@ public class thanhvienController {
         if (bindingResult.hasErrors()) {
             return "thanhvien/form-dangky";
         }
-
         thanhvien tv = thanhvienService.save(tvDTO);
         ThanhVienDTO newTvDTO = thanhvienService.modelToDTO(tv);
-
         //lưu thông tin user vào session
         session.setAttribute("thanhvien", newTvDTO);
-
+        //và chuyển hướng về trang home
         return "redirect:/thanhvien/home";
     }
 
@@ -409,22 +418,12 @@ public class thanhvienController {
 
         if(session.getAttribute("thanhvien") != null){
 
-            //kiểm tra trong session có thông tin thành viên không,
+            //kiểm tra trong session xem đã đăng nhập chưa,
             // nếu có thì chuyển hướng về trang home
             return "redirect:/thanhvien/home";
         }
 
-        model.addAttribute("tv", new ThanhVienDTO(
-                null,
-                null,
-                null,
-                null,
-                null,
-                null,
-                null,
-                null,
-                null,
-                null));
+        model.addAttribute("tv", new ThanhVienDTO(null, null, null, null, null, null, null, null, null, null));
 
         return "thanhvien/form-dangnhap";
     }
@@ -439,12 +438,9 @@ public class thanhvienController {
         thanhvien tv = thanhvienService.checkLogin(tvDTO.getId(), tvDTO.getPassword());
 
         if(tv != null){
-
             //khi đăng nhập thành công, lưu thông tin thành viên vào session
             ThanhVienDTO newTvDTO = thanhvienService.modelToDTO(tv);
-
             session.setAttribute("thanhvien", newTvDTO);
-
             return "redirect:/thanhvien/home";
         }
 
@@ -529,21 +525,24 @@ public class thanhvienController {
     public Map<String, String> forgotPassword(@RequestParam("email") String email,
                                               Model model,
                                               HttpSession session){
-
         Map<String, String> response = new HashMap<>();
 
-        thanhvien tv = thanhvienService.findByEmail(email);
+        if(email.trim().isEmpty()){
+            response.put("status", "failed");
+            response.put("message", "Email không được để trống");
+            return response;
+        }
 
+        thanhvien tv = thanhvienService.findByEmail(email);
         if(tv == null){
             response.put("status", "failed");
-            response.put("message", "Email không tồn tại");
+            response.put("message", "Email không tồn tại trong hệ thống");
             return response;
         }
         else{
             response.put("status", "success");
-            response.put("message", "Email tồn tại");
+            response.put("message", "Đã tìm thấy email của bạn và gửi mã xác nhận");
             email = email.trim();
-
             //xử lý tạo và lưu mã xác thực vào db
             String code = generateVerificationCode();
             VerificationCode verificationCode = new VerificationCode();
@@ -560,7 +559,7 @@ public class thanhvienController {
             session.setAttribute("newPassTv", verificationCode.getThanhvien().getId());
 
             //gửi email chứa mã xác thực
-            emailService.sendSimpleMessage(email, "Your verification code", "Your verification code is: "+code);
+            emailService.sendSimpleMessage(email, "Gửi mã xác thực đổi mật khẩu cho: " + verificationCode.getThanhvien().getId(), "Mã xác thực của bạn là: "+code);
 
             return response;
         }
